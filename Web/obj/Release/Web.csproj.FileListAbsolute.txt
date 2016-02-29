@@ -1,0 +1,39 @@
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\roslyn\csc.exe
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\roslyn\Microsoft.CodeAnalysis.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\roslyn\Microsoft.CSharp.Core.targets
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\roslyn\Microsoft.VisualBasic.Core.targets
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\roslyn\System.Collections.Immutable.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\roslyn\System.Reflection.Metadata.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\roslyn\vbc.exe
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\roslyn\VBCSCompiler.exe
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\Web.dll.config
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\Web.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\Web.pdb
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\obj\Release\Web.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\Web\obj\Release\Web.pdb
+E:\RssFeedApp\Web\bin\roslyn\csc.exe
+E:\RssFeedApp\Web\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+E:\RssFeedApp\Web\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+E:\RssFeedApp\Web\bin\roslyn\Microsoft.CodeAnalysis.dll
+E:\RssFeedApp\Web\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+E:\RssFeedApp\Web\bin\roslyn\Microsoft.CSharp.Core.targets
+E:\RssFeedApp\Web\bin\roslyn\Microsoft.VisualBasic.Core.targets
+E:\RssFeedApp\Web\bin\roslyn\System.Collections.Immutable.dll
+E:\RssFeedApp\Web\bin\roslyn\System.Reflection.Metadata.dll
+E:\RssFeedApp\Web\bin\roslyn\vbc.exe
+E:\RssFeedApp\Web\bin\roslyn\VBCSCompiler.exe
+E:\RssFeedApp\Web\bin\roslyn\VBCSCompiler.exe.config
+E:\RssFeedApp\Web\bin\Web.dll.config
+E:\RssFeedApp\Web\bin\Web.dll
+E:\RssFeedApp\Web\bin\Web.pdb
+E:\RssFeedApp\Web\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+E:\RssFeedApp\Web\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+E:\RssFeedApp\Web\obj\Release\Web.dll
+E:\RssFeedApp\Web\obj\Release\Web.pdb
+E:\RssFeedApp\Web\obj\Release\Web.csprojResolveAssemblyReference.cache

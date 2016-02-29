@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="rssapi" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^E:\\RssFeedApp\\RssFeedApp\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^E:\\RssFeedApp\\RssFeedApp\\obj\\Release\\Package\\PackageTmp$" />
+  </parameter>
+  <parameter name="AuthContext-Web.config Connection String" description="" value="Data Source=tcp:rssdb.database.windows.net,1433;Initial Catalog=rssapi_db;User Id=rssuserdb@rssdb;Password=q1w2E3r4" tags="">
+    <parameterEntry kind="XmlFile" scope="E:\\RssFeedApp\\RssFeedApp\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='AuthContext']/@connectionString" />
+  </parameter>
+</parameters>

@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html ng-app="AngularAuthApp">
+<head>
+    <meta content="IE=edge, chrome=1" http-equiv="X-UA-Compatible" />
+    <title>AngularJS Authentication</title>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="Content/site.css" rel="stylesheet" />
+    <link href="Content/loading-bar.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-controller="IndexController">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="btn btn-success navbar-toggle" ng-click="navbarExpanded = !navbarExpanded">
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                </button>
+                <a class="navbar-brand" href="#/">Home</a>
+            </div>
+            <div class="collapse navbar-collapse" data-collapse="!navbarExpanded">
+                <ul class="nav navbar-nav navbar-right">
+                    <li ng-hide="!authentication.isAuth"><a href="#">Welcome {{authentication.userName}}</a></li>
+                    <li ng-hide="!authentication.isAuth"><a href="#/orders">My Orders</a></li>
+                    <li ng-hide="!authentication.isAuth"><a href="#/refresh">Refresh Token</a></li>
+                    <li ng-hide="!authentication.isAuth"><a href="" ng-click="logOut()">Logout</a></li>
+                    <li ng-hide="authentication.isAuth"> <a href="#/login">Login</a></li>
+                    <li ng-hide="authentication.isAuth"> <a href="#/signup">Sign Up</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="jumbotron">
+        <div class="container">
+            <div class="page-header text-center">
+                <h1>AngularJS Authentication</h1>
+            </div>
+            <p>This single page application is built using AngularJS, it is using OAuth bearer token authentication, ASP.NET Web API 2, OWIN middleware, and ASP.NET Identity to generate tokens and register users.</p>
+        </div>
+    </div>
+    <div class="container">
+        <div ng-view="">
+        </div>
+    </div>
+    <hr />
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-muted">Created by Taiseer Joudeh. Twitter: <a target="_blank" href="http://twitter.com/tjoudeh">@tjoudeh</a></p>
+                </div>
+                <div class="col-md-6">
+                    <p class="text-muted">Taiseer Joudeh Blog: <a target="_blank" href="http://bitoftech.net">bitoftech.net</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 3rd party libraries -->
+    <script src="Scripts/angular.min.js"></script>
+    <script src="Scripts/angular-route.min.js"></script>
+    <script src="Scripts/angular-local-storage.min.js"></script>
+    <script src="Scripts/loading-bar.min.js"></script>
+
+    <script src="App/app.js"></script>
+
+    <script src="App/Services/AuthInterceptorService.js"></script>
+    <script src="App/Services/AuthService.js"></script>
+    <script src="App/Services/OrdersService.js"></script>
+    <script src="App/Services/TokenManagerService.js"></script>
+
+    <script src="App/Controllers/IndexController.js"></script>
+    <script src="App/Controllers/HomeController.js"></script>
+    <script src="App/Controllers/LoginController.js"></script>
+    <script src="App/Controllers/SignupController.js"></script>
+    <script src="App/Controllers/OrdersController.js"></script>
+    <script src="App/Controllers/TokenManagerController.js"></script>
+    <script src="App/Controllers/RefreshController.js"></script>
+    <script src="App/Controllers/AssociateController.js"></script>
+</body>
+</html>

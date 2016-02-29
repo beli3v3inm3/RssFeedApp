@@ -1,0 +1,112 @@
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\roslyn\csc.exe
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\roslyn\Microsoft.CodeAnalysis.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\roslyn\Microsoft.CSharp.Core.targets
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\roslyn\Microsoft.VisualBasic.Core.targets
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\roslyn\System.Collections.Immutable.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\roslyn\System.Reflection.Metadata.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\roslyn\vbc.exe
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\roslyn\VBCSCompiler.exe
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\RssFeedApp.dll.config
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\RssFeedApp.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\RssFeedApp.pdb
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\EntityFramework.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\EntityFramework.SqlServer.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.AspNet.Identity.Core.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.AspNet.Identity.EntityFramework.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.AspNet.Identity.Owin.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Cors.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Host.SystemWeb.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.Cookies.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.Facebook.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.Google.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.OAuth.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Newtonsoft.Json.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Owin.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\System.Net.Http.Formatting.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\System.Web.Cors.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\System.Web.Http.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\System.Web.Http.Owin.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\EntityFramework.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\EntityFramework.SqlServer.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.AspNet.Identity.Core.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.AspNet.Identity.Owin.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Cors.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Host.SystemWeb.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.Cookies.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.Facebook.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.Google.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.OAuth.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\Newtonsoft.Json.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\System.Net.Http.Formatting.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\System.Web.Http.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\bin\System.Web.Http.Owin.xml
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\obj\Release\RssFeedApp.csprojResolveAssemblyReference.cache
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\obj\Release\RssFeedApp.dll
+C:\Users\vitaliy.zhynkin\documents\visual studio 2015\Projects\RssFeedApp\RssFeedApp\obj\Release\RssFeedApp.pdb
+E:\RssFeedApp\RssFeedApp\bin\roslyn\csc.exe
+E:\RssFeedApp\RssFeedApp\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+E:\RssFeedApp\RssFeedApp\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+E:\RssFeedApp\RssFeedApp\bin\roslyn\Microsoft.CodeAnalysis.dll
+E:\RssFeedApp\RssFeedApp\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+E:\RssFeedApp\RssFeedApp\bin\roslyn\Microsoft.CSharp.Core.targets
+E:\RssFeedApp\RssFeedApp\bin\roslyn\Microsoft.VisualBasic.Core.targets
+E:\RssFeedApp\RssFeedApp\bin\roslyn\System.Collections.Immutable.dll
+E:\RssFeedApp\RssFeedApp\bin\roslyn\System.Reflection.Metadata.dll
+E:\RssFeedApp\RssFeedApp\bin\roslyn\vbc.exe
+E:\RssFeedApp\RssFeedApp\bin\roslyn\VBCSCompiler.exe
+E:\RssFeedApp\RssFeedApp\bin\roslyn\VBCSCompiler.exe.config
+E:\RssFeedApp\RssFeedApp\bin\RssFeedApp.dll.config
+E:\RssFeedApp\RssFeedApp\bin\RssFeedApp.dll
+E:\RssFeedApp\RssFeedApp\bin\RssFeedApp.pdb
+E:\RssFeedApp\RssFeedApp\bin\EntityFramework.dll
+E:\RssFeedApp\RssFeedApp\bin\EntityFramework.SqlServer.dll
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.AspNet.Identity.Core.dll
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.AspNet.Identity.EntityFramework.dll
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.AspNet.Identity.Owin.dll
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Cors.dll
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.dll
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Host.SystemWeb.dll
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.Cookies.dll
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.dll
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.Facebook.dll
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.Google.dll
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.OAuth.dll
+E:\RssFeedApp\RssFeedApp\bin\Newtonsoft.Json.dll
+E:\RssFeedApp\RssFeedApp\bin\Owin.dll
+E:\RssFeedApp\RssFeedApp\bin\System.Net.Http.Formatting.dll
+E:\RssFeedApp\RssFeedApp\bin\System.Web.Cors.dll
+E:\RssFeedApp\RssFeedApp\bin\System.Web.Http.dll
+E:\RssFeedApp\RssFeedApp\bin\System.Web.Http.Owin.dll
+E:\RssFeedApp\RssFeedApp\bin\EntityFramework.xml
+E:\RssFeedApp\RssFeedApp\bin\EntityFramework.SqlServer.xml
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.AspNet.Identity.Core.xml
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.AspNet.Identity.Owin.xml
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.xml
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Cors.xml
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Host.SystemWeb.xml
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.xml
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.Cookies.xml
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.Facebook.xml
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.Google.xml
+E:\RssFeedApp\RssFeedApp\bin\Microsoft.Owin.Security.OAuth.xml
+E:\RssFeedApp\RssFeedApp\bin\Newtonsoft.Json.xml
+E:\RssFeedApp\RssFeedApp\bin\System.Net.Http.Formatting.xml
+E:\RssFeedApp\RssFeedApp\bin\System.Web.Http.xml
+E:\RssFeedApp\RssFeedApp\bin\System.Web.Http.Owin.xml
+E:\RssFeedApp\RssFeedApp\obj\Release\RssFeedApp.csprojResolveAssemblyReference.cache
+E:\RssFeedApp\RssFeedApp\obj\Release\RssFeedApp.dll
+E:\RssFeedApp\RssFeedApp\obj\Release\RssFeedApp.pdb
