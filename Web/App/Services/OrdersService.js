@@ -1,5 +1,5 @@
 ﻿'use strict';
-app.factory('OrdersService', ['$http', 'ngAuthSetting', function ($http, ngAuthSettings) {
+app.factory('OrdersService', ['$http', 'ngAuthSettings', function ($http, ngAuthSettings) {
 
     var serviceBase = ngAuthSettings.apiServiceBaseUri;
     var ordersServiceFactory = {};

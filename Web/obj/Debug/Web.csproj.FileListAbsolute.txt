@@ -38,3 +38,11 @@ E:\RssFeedApp\Web\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 E:\RssFeedApp\Web\obj\Debug\Web.csprojResolveAssemblyReference.cache
 E:\RssFeedApp\Web\obj\Debug\Web.dll
 E:\RssFeedApp\Web\obj\Debug\Web.pdb
+E:\RssFeedApp\Web\bin\Newtonsoft.Json.dll
+E:\RssFeedApp\Web\bin\System.Net.Http.Formatting.dll
+E:\RssFeedApp\Web\bin\System.Web.Http.dll
+E:\RssFeedApp\Web\bin\System.Web.Http.WebHost.dll
+E:\RssFeedApp\Web\bin\Newtonsoft.Json.xml
+E:\RssFeedApp\Web\bin\System.Net.Http.Formatting.xml
+E:\RssFeedApp\Web\bin\System.Web.Http.xml
+E:\RssFeedApp\Web\bin\System.Web.Http.WebHost.xml

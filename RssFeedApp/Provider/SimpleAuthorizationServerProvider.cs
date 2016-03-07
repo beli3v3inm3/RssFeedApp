@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OAuth;
 using RssFeedApp.Models;
@@ -26,10 +25,8 @@ namespace RssFeedApp.Provider
 
             if (context.ClientId == null)
             {
-                //Remove the comments from the below line context.SetError, and invalidate context 
-                //if you want to force sending clientId/secrects once obtain access tokens. 
                 context.Validated();
-                //context.SetError("invalid_clientId", "ClientId should be sent.");
+               //context.SetError("invalid_clientId", "ClientId should be sent.");
                 return Task.FromResult<object>(null);
             }
 
@@ -64,8 +61,8 @@ namespace RssFeedApp.Provider
                 return Task.FromResult<object>(null);
             }
 
-            context.OwinContext.Set<string>("as:clientAllowedOrigin", client.AllowedOrigin);
-            context.OwinContext.Set<string>("as:clientRefreshTokenLifeTime", client.RefreshTokenLifeTime.ToString());
+            context.OwinContext.Set("as:clientAllowedOrigin", client.AllowedOrigin);
+            context.OwinContext.Set("as:clientRefreshTokenLifeTime", client.RefreshTokenLifeTime.ToString());
 
             context.Validated();
             return Task.FromResult<object>(null);

@@ -13,23 +13,31 @@ using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Linq;
 using RssFeedApp.Models;
 using RssFeedApp.Result;
+using System.Web.Mvc;
 
 namespace RssFeedApp.Controller
 {
-    [RoutePrefix("api/Account")]
     public class AccountController : ApiController
     {
         private readonly AuthRepository _repo;
+        private RealEstateContext _context;
 
         private IAuthenticationManager Authentication => Request.GetOwinContext().Authentication;
 
         public AccountController()
         {
             _repo = new AuthRepository();
+            _context = new RealEstateContext();
+        }
+
+        public ActionResult GetDBInfo()
+        {
+            
+            return Json(_context.Client.
         }
 
         // POST api/Account/Register
-        [AllowAnonymous]
+        [System.Web.Mvc.AllowAnonymous]
         public async Task<IHttpActionResult> Register(UserModel userModel)
         {
             if (!ModelState.IsValid)
@@ -45,10 +53,10 @@ namespace RssFeedApp.Controller
         }
 
         // GET api/Account/ExternalLogin
-        [OverrideAuthentication]
+        [System.Web.Mvc.OverrideAuthentication]
         [HostAuthentication(DefaultAuthenticationTypes.ExternalCookie)]
-        [AllowAnonymous]
-        [Route("ExternalLogin", Name = "ExternalLogin")]
+        [System.Web.Mvc.AllowAnonymous]
+        [System.Web.Mvc.Route("ExternalLogin", Name = "ExternalLogin")]
         public async Task<IHttpActionResult> GetExternalLogin(string provider, string error = null)
         {
             var redirectUri = string.Empty;
@@ -95,8 +103,7 @@ namespace RssFeedApp.Controller
         }
 
         // POST api/Account/RegisterExternal
-        [AllowAnonymous]
-        [Route("RegisterExternal")]
+        [System.Web.Mvc.AllowAnonymous]
         public async Task<IHttpActionResult> RegisterExternal(RegisterExternalBindingModel model)
         {
 
@@ -146,9 +153,8 @@ namespace RssFeedApp.Controller
             return Ok(accessTokenResponse);
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("ObtainLocalAccessToken")]
+        [System.Web.Mvc.AllowAnonymous]
+        [System.Web.Mvc.HttpGet]
         public async Task<IHttpActionResult> ObtainLocalAccessToken(string provider, string externalAccessToken)
         {
 
@@ -278,8 +284,6 @@ namespace RssFeedApp.Controller
             switch (provider)
             {
                 case "Facebook":
-                    //You can get it from here: https://developers.facebook.com/tools/accesstoken/
-                    //More about debug_tokn here: http://stackoverflow.com/questions/16641083/how-does-one-get-the-app-access-token-for-debug-token-inspection-on-facebook
                     var appToken = "463597530517445|0BLFsdh8pFtoiV5MHk4FhgY1eaw";
                     verifyTokenEndPoint =
                         $"https://graph.facebook.com/debug_token?input_token={accessToken}&access_token={appToken}";
@@ -364,10 +368,10 @@ namespace RssFeedApp.Controller
 
         private class ExternalLoginData
         {
-            public string LoginProvider { get; set; }
-            public string ProviderKey { get; set; }
-            public string UserName { get; set; }
-            public string ExternalAccessToken { get; set; }
+            public string LoginProvider { get; private set; }
+            public string ProviderKey { get; private set; }
+            public string UserName { get; private set; }
+            public string ExternalAccessToken { get; private set; }
 
             public static ExternalLoginData FromIdentity(ClaimsIdentity identity)
             {

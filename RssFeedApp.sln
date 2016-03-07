@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RssFeedApp", "RssFeedApp\Rs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{68A916C9-2D4B-4133-BD3A-808F5EE50314}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resource", "Resource\Resource.csproj", "{A870C7C7-7424-4552-9264-7D9986EC1FE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{68A916C9-2D4B-4133-BD3A-808F5EE50314}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68A916C9-2D4B-4133-BD3A-808F5EE50314}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68A916C9-2D4B-4133-BD3A-808F5EE50314}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A870C7C7-7424-4552-9264-7D9986EC1FE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A870C7C7-7424-4552-9264-7D9986EC1FE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A870C7C7-7424-4552-9264-7D9986EC1FE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A870C7C7-7424-4552-9264-7D9986EC1FE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
