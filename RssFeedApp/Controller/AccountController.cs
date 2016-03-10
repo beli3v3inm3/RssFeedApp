@@ -13,31 +13,24 @@ using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Linq;
 using RssFeedApp.Models;
 using RssFeedApp.Result;
-using System.Web.Mvc;
 
 namespace RssFeedApp.Controller
 {
+    [RoutePrefix("api/account")]
     public class AccountController : ApiController
     {
         private readonly AuthRepository _repo;
-        private RealEstateContext _context;
 
         private IAuthenticationManager Authentication => Request.GetOwinContext().Authentication;
 
         public AccountController()
         {
             _repo = new AuthRepository();
-            _context = new RealEstateContext();
-        }
-
-        public ActionResult GetDBInfo()
-        {
-            
-            return Json(_context.Client.
         }
 
         // POST api/Account/Register
-        [System.Web.Mvc.AllowAnonymous]
+        [AllowAnonymous]
+        [Route("Register")]
         public async Task<IHttpActionResult> Register(UserModel userModel)
         {
             if (!ModelState.IsValid)
@@ -52,109 +45,109 @@ namespace RssFeedApp.Controller
             return errorResult ?? Ok();
         }
 
-        // GET api/Account/ExternalLogin
-        [System.Web.Mvc.OverrideAuthentication]
-        [HostAuthentication(DefaultAuthenticationTypes.ExternalCookie)]
-        [System.Web.Mvc.AllowAnonymous]
-        [System.Web.Mvc.Route("ExternalLogin", Name = "ExternalLogin")]
-        public async Task<IHttpActionResult> GetExternalLogin(string provider, string error = null)
-        {
-            var redirectUri = string.Empty;
+        //// GET api/Account/ExternalLogin
+        //[OverrideAuthentication]
+        //[HostAuthentication(DefaultAuthenticationTypes.ExternalCookie)]
+        //[AllowAnonymous]
+        //[Route("ExternalLogin", Name = "ExternalLogin")]
+        //public async Task<IHttpActionResult> GetExternalLogin(string provider, string error = null)
+        //{
+        //    var redirectUri = string.Empty;
 
-            if (error != null)
-            {
-                return BadRequest(Uri.EscapeDataString(error));
-            }
+        //    if (error != null)
+        //    {
+        //        return BadRequest(Uri.EscapeDataString(error));
+        //    }
 
-            if (!User.Identity.IsAuthenticated)
-            {
-                return new ChallengeResult(provider, this);
-            }
+        //    if (!User.Identity.IsAuthenticated)
+        //    {
+        //        return new ChallengeResult(provider, this);
+        //    }
 
-            var redirectUriValidationResult = ValidateClientAndRedirectUri(ref redirectUri);
+        //    var redirectUriValidationResult = ValidateClientAndRedirectUri(ref redirectUri);
 
-            if (!string.IsNullOrWhiteSpace(redirectUriValidationResult))
-            {
-                return BadRequest(redirectUriValidationResult);
-            }
+        //    if (!string.IsNullOrWhiteSpace(redirectUriValidationResult))
+        //    {
+        //        return BadRequest(redirectUriValidationResult);
+        //    }
 
-            var externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
+        //    var externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
 
-            if (externalLogin == null)
-            {
-                return InternalServerError();
-            }
+        //    if (externalLogin == null)
+        //    {
+        //        return InternalServerError();
+        //    }
 
-            if (externalLogin.LoginProvider != provider)
-            {
-                Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-                return new ChallengeResult(provider, this);
-            }
+        //    if (externalLogin.LoginProvider != provider)
+        //    {
+        //        Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+        //        return new ChallengeResult(provider, this);
+        //    }
 
-            var user = await _repo.FindAsync(new UserLoginInfo(externalLogin.LoginProvider, externalLogin.ProviderKey));
+        //    var user = await _repo.FindAsync(new UserLoginInfo(externalLogin.LoginProvider, externalLogin.ProviderKey));
 
-            var hasRegistered = user != null;
+        //    var hasRegistered = user != null;
 
-            redirectUri =
-                $"{redirectUri}#external_access_token={externalLogin.ExternalAccessToken}&provider={externalLogin.LoginProvider}&haslocalaccount={hasRegistered.ToString()}&external_user_name={externalLogin.UserName}";
+        //    redirectUri =
+        //        $"{redirectUri}#external_access_token={externalLogin.ExternalAccessToken}&provider={externalLogin.LoginProvider}&haslocalaccount={hasRegistered.ToString()}&external_user_name={externalLogin.UserName}";
 
-            return Redirect(redirectUri);
+        //    return Redirect(redirectUri);
 
-        }
+        //}
 
-        // POST api/Account/RegisterExternal
-        [System.Web.Mvc.AllowAnonymous]
-        public async Task<IHttpActionResult> RegisterExternal(RegisterExternalBindingModel model)
-        {
+        //// POST api/Account/RegisterExternal
+        //[AllowAnonymous]
+        //public async Task<IHttpActionResult> RegisterExternal(RegisterExternalBindingModel model)
+        //{
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var verifiedAccessToken = await VerifyExternalAccessToken(model.Provider, model.ExternalAccessToken);
-            if (verifiedAccessToken == null)
-            {
-                return BadRequest("Invalid Provider or External Access Token");
-            }
+        //    var verifiedAccessToken = await VerifyExternalAccessToken(model.Provider, model.ExternalAccessToken);
+        //    if (verifiedAccessToken == null)
+        //    {
+        //        return BadRequest("Invalid Provider or External Access Token");
+        //    }
 
-            var user = await _repo.FindAsync(new UserLoginInfo(model.Provider, verifiedAccessToken.user_id));
+        //    var user = await _repo.FindAsync(new UserLoginInfo(model.Provider, verifiedAccessToken.user_id));
 
-            var hasRegistered = user != null;
+        //    var hasRegistered = user != null;
 
-            if (hasRegistered)
-            {
-                return BadRequest("External user is already registered");
-            }
+        //    if (hasRegistered)
+        //    {
+        //        return BadRequest("External user is already registered");
+        //    }
 
-            user = new IdentityUser() { UserName = model.UserName };
+        //    user = new IdentityUser() { UserName = model.UserName };
 
-            var result = await _repo.CreateAsync(user);
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
+        //    var result = await _repo.CreateAsync(user);
+        //    if (!result.Succeeded)
+        //    {
+        //        return GetErrorResult(result);
+        //    }
 
-            var info = new ExternalLoginInfo()
-            {
-                DefaultUserName = model.UserName,
-                Login = new UserLoginInfo(model.Provider, verifiedAccessToken.user_id)
-            };
+        //    var info = new ExternalLoginInfo()
+        //    {
+        //        DefaultUserName = model.UserName,
+        //        Login = new UserLoginInfo(model.Provider, verifiedAccessToken.user_id)
+        //    };
 
-            result = await _repo.AddLoginAsync(user.Id, info.Login);
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
+        //    result = await _repo.AddLoginAsync(user.Id, info.Login);
+        //    if (!result.Succeeded)
+        //    {
+        //        return GetErrorResult(result);
+        //    }
 
-            //generate access token response
-            var accessTokenResponse = GenerateLocalAccessTokenResponse(model.UserName);
+        //    //generate access token response
+        //    var accessTokenResponse = GenerateLocalAccessTokenResponse(model.UserName);
 
-            return Ok(accessTokenResponse);
-        }
+        //    return Ok(accessTokenResponse);
+        //}
 
-        [System.Web.Mvc.AllowAnonymous]
-        [System.Web.Mvc.HttpGet]
+        [AllowAnonymous]
+        [HttpGet]
         public async Task<IHttpActionResult> ObtainLocalAccessToken(string provider, string externalAccessToken)
         {
 

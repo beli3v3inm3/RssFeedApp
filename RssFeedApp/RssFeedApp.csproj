@@ -214,9 +214,13 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controller\RssReaderController.cs" />
     <Compile Include="Entities\RefreshToken.cs" />
+    <Compile Include="Models\Auth.cs" />
     <Compile Include="Models\ExternalLoginModels.cs" />
-    <Compile Include="Models\RealEstateContext.cs" />
+    <Compile Include="App_Start\RealEstateContext.cs" />
+    <Compile Include="Models\IUserSessionProvider.cs" />
     <Compile Include="Models\Rss.cs" />
+    <Compile Include="Models\IUserRepository.cs" />
+    <Compile Include="Models\UserRepository.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

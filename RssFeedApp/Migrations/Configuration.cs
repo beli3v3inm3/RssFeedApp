@@ -39,7 +39,7 @@ namespace RssFeedApp.Migrations
                     ApplicationType = AplicationTypes.JavaScript,
                     Active = true,
                     RefreshTokenLifeTime = 7200,
-                    AllowedOrigin = "http://rsswebapp.azurewebsites.net"
+                    AllowedOrigin = "http://localhost:63611"
                 },
                 new Client
                 { Id = "consoleApp",

@@ -40,7 +40,7 @@ app.config(function ($routeProvider) {
     $routeProvider.otherwise({ redirectTo: "/home" });
 });
 
-var serviceBase = 'http://rssapi.azurewebsites.net/';
+var serviceBase = 'http://localhost:63611/';
 app.constant('ngAuthSettings', {
     apiServiceBaseUri: serviceBase,
     clientId: 'ngAuthApp'

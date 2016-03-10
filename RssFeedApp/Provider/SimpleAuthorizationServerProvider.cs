@@ -6,6 +6,8 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OAuth;
 using RssFeedApp.Models;
 using RssFeedApp.Entities;
+using System;
+
 
 namespace RssFeedApp.Provider
 {
@@ -102,7 +104,7 @@ namespace RssFeedApp.Provider
                 });
 
             var ticket = new AuthenticationTicket(identity, props);
-            context.Validated(ticket);
+            context.Validated();
 
         }
 
@@ -142,7 +144,6 @@ namespace RssFeedApp.Provider
 
             return Task.FromResult<object>(null);
         }
-
     }
 
 }
