@@ -13,12 +13,18 @@ namespace RssFeedApp.Provider
 {
     public class SimpleAuthorizationServerProvider : OAuthAuthorizationServerProvider
     {
+        private readonly UserRepository _repository;
+
+        public SimpleAuthorizationServerProvider()
+        {
+            _repository = new UserRepository();
+        }
+
         public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
 
             string clientId;
             string clientSecret;
-            Client client;
 
             if (!context.TryGetBasicCredentials(out clientId, out clientSecret))
             {
@@ -28,15 +34,12 @@ namespace RssFeedApp.Provider
             if (context.ClientId == null)
             {
                 context.Validated();
-               //context.SetError("invalid_clientId", "ClientId should be sent.");
+                //context.SetError("invalid_clientId", "ClientId should be sent.");
                 return Task.FromResult<object>(null);
             }
 
-            using (var repo = new AuthRepository())
-            {
-                client = repo.FindClient(context.ClientId);
-            }
-
+            var client = _repository.FindClient(context.ClientId);
+            
             if (client == null)
             {
                 context.SetError("invalid_clientId", $"Client '{context.ClientId}' is not registered in the system.");
@@ -77,16 +80,14 @@ namespace RssFeedApp.Provider
 
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { allowedOrigin });
 
-            using (var repo = new AuthRepository())
-            {
-                var user = await repo.FindUser(context.UserName, context.Password);
+            var user = await _repository.FindUserTask(context.UserName, context.Password);
 
-                if (user == null)
-                {
-                    context.SetError("invalid_grant", "The user name or password is incorrect.");
-                    return;
-                }
+            if (user == null)
+            {
+                context.SetError("invalid_grant", "The user name or password is incorrect.");
+                return;
             }
+
 
             var identity = new ClaimsIdentity(context.Options.AuthenticationType);
             identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
@@ -104,7 +105,7 @@ namespace RssFeedApp.Provider
                 });
 
             var ticket = new AuthenticationTicket(identity, props);
-            context.Validated();
+            context.Validated(ticket);
 
         }
 

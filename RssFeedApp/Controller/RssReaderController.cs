@@ -1,23 +1,22 @@
 ﻿using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
+using MongoDB.Bson;
 using RssFeedApp.Models;
-using System.Web.SessionState;
 
 namespace RssFeedApp.Controller
 {
     [RoutePrefix("api/rssreader")]
-
     public class RssReaderController : ApiController
     {
         private readonly UserRepository _repository;
-        private const string userKey = "Name";
 
-        public RssReaderController(UserRepository userRepository)
+        public RssReaderController()
         {
-            _repository = userRepository;
+            _repository = new UserRepository();
         }
 
+        //[Authorize]
+        //[Route("")]
         //public async Task<IHttpActionResult> GetDbInfo()
         //{
         //    var buildInfoCOmmand = new BsonDocument("buildinfo", 1);
@@ -25,6 +24,7 @@ namespace RssFeedApp.Controller
         //    return Json(buildInfo);
         //}
 
+        [AllowAnonymous]
         [Route("Register")]
         public async Task<IHttpActionResult> RegisterTask(UserModel userModel)
         {
@@ -32,8 +32,6 @@ namespace RssFeedApp.Controller
             {
                 return BadRequest(ModelState);
             }
-
-            HttpContext.Current.Session[userKey] = userModel.UserName;
 
             await _repository.RegisterTask(userModel);
 

@@ -214,7 +214,6 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controller\RssReaderController.cs" />
     <Compile Include="Entities\RefreshToken.cs" />
-    <Compile Include="Models\Auth.cs" />
     <Compile Include="Models\ExternalLoginModels.cs" />
     <Compile Include="App_Start\RealEstateContext.cs" />
     <Compile Include="Models\IUserSessionProvider.cs" />

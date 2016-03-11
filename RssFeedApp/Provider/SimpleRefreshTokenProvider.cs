@@ -8,6 +8,7 @@ namespace RssFeedApp.Provider
 {
     public class SimpleRefreshTokenProvider : IAuthenticationTokenProvider
     {
+        private readonly UserRepository _repository = new UserRepository();
 
         public async Task CreateAsync(AuthenticationTokenCreateContext context)
         {
@@ -20,31 +21,27 @@ namespace RssFeedApp.Provider
 
             var refreshTokenId = Guid.NewGuid().ToString("n");
 
-            using (var repo = new AuthRepository())
+            var refreshTokenLifeTime = context.OwinContext.Get<string>("as:clientRefreshTokenLifeTime");
+
+            var token = new RefreshToken()
             {
-                var refreshTokenLifeTime = context.OwinContext.Get<string>("as:clientRefreshTokenLifeTime");
+                Id = Helper.GetHash(refreshTokenId),
+                ClientId = clientid,
+                Subject = context.Ticket.Identity.Name,
+                IssuedUtc = DateTime.UtcNow,
+                ExpiresUtc = DateTime.UtcNow.AddMinutes(Convert.ToDouble(refreshTokenLifeTime))
+            };
 
-                var token = new RefreshToken()
-                {
-                    Id = Helper.GetHash(refreshTokenId),
-                    ClientId = clientid,
-                    Subject = context.Ticket.Identity.Name,
-                    IssuedUtc = DateTime.UtcNow,
-                    ExpiresUtc = DateTime.UtcNow.AddMinutes(Convert.ToDouble(refreshTokenLifeTime))
-                };
+            context.Ticket.Properties.IssuedUtc = token.IssuedUtc;
+            context.Ticket.Properties.ExpiresUtc = token.ExpiresUtc;
 
-                context.Ticket.Properties.IssuedUtc = token.IssuedUtc;
-                context.Ticket.Properties.ExpiresUtc = token.ExpiresUtc;
+            token.ProtectedTicket = context.SerializeTicket();
 
-                token.ProtectedTicket = context.SerializeTicket();
+            var result = await _repository.AddRefreshToken(token);
 
-                var result = await repo.AddRefreshToken(token);
-
-                if (result)
-                {
-                    context.SetToken(refreshTokenId);
-                }
-
+            if (result != null)
+            {
+                context.SetToken(refreshTokenId);
             }
         }
 
@@ -56,16 +53,13 @@ namespace RssFeedApp.Provider
 
             var hashedTokenId = Helper.GetHash(context.Token);
 
-            using (var repo = new AuthRepository())
-            {
-                var refreshToken = await repo.FindRefreshToken(hashedTokenId);
+            var refreshToken = await _repository.FindRefreshToken(hashedTokenId);
 
-                if (refreshToken != null)
-                {
-                    //Get protectedTicket from refreshToken class
-                    context.DeserializeTicket(refreshToken.ProtectedTicket);
-                    var result = await repo.RemoveRefreshToken(hashedTokenId);
-                }
+            if (refreshToken != null)
+            {
+                //Get protectedTicket from refreshToken class
+                context.DeserializeTicket(refreshToken.ProtectedTicket);
+                _repository.RemoveRefreshToken(hashedTokenId);
             }
         }
 

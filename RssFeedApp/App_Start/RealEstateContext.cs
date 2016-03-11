@@ -1,4 +1,6 @@
-﻿using MongoDB.Driver;
+﻿using System;
+using MongoDB.Driver;
+using RssFeedApp.Entities;
 using RssFeedApp.Models;
 using RssFeedApp.Properties;
 
@@ -16,5 +18,8 @@ namespace RssFeedApp
         }
 
         public IMongoCollection<UserModel> UserCollection => MongoDatabase.GetCollection<UserModel>("Users");
+        public IMongoCollection<Client> ClientCollection => MongoDatabase.GetCollection<Client>("Clients");
+        public IMongoCollection<RefreshToken> RefreshTokenCollection => MongoDatabase.GetCollection<RefreshToken>("RefreshToken"); 
+
     }
 }
