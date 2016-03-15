@@ -8,10 +8,12 @@ namespace RssFeedApp.Controller
     public class AccountController : ApiController
     {
         private readonly UserRepository _repository;
+        private readonly RssConnection _connection;
 
         public AccountController()
         {
             _repository = new UserRepository();
+            _connection = new RssConnection();
         }
 
         [AllowAnonymous]
@@ -26,6 +28,15 @@ namespace RssFeedApp.Controller
             await _repository.RegisterTask(userModel);
 
             return Ok();
+        }
+
+        public void RssRead()
+        {
+            _connection.Connection.Open();
+            _connection.SqlCommand.Connection = _connection.Connection;
+            _connection.SqlCommand.CommandText = "insert into test (id, name) values ('dq1we3', 'd2qwe34')";
+            _connection.SqlCommand.ExecuteNonQuery();
+            _connection.Dispose();
         }
     }
 }

@@ -83,6 +83,11 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\Controllers\RssFeedController.js" />
+    <Content Include="App\Controllers\ViewRssFeedController.js" />
+    <Content Include="App\Services\RssFeedService.js" />
+    <Content Include="App\Views\AddFeed.html" />
+    <Content Include="App\Views\ViewFeed.html" />
     <Content Include="packages.config" />
     <Content Include="Scripts\jquery-1.9.1.min.map" />
     <None Include="Properties\PublishProfiles\rssapi - Web Deploy.pubxml" />

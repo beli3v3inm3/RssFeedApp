@@ -138,6 +138,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.Cors, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.0.0\lib\net45\System.Web.Cors.dll</HintPath>
       <Private>True</Private>
@@ -211,13 +212,14 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\RssConnection.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controller\RssReaderController.cs" />
     <Compile Include="Entities\RefreshToken.cs" />
     <Compile Include="Models\ExternalLoginModels.cs" />
     <Compile Include="App_Start\RealEstateContext.cs" />
     <Compile Include="Models\IUserSessionProvider.cs" />
-    <Compile Include="Models\Rss.cs" />
+    <Compile Include="Models\RssFeed.cs" />
     <Compile Include="Models\IUserRepository.cs" />
     <Compile Include="Models\UserRepository.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -227,6 +229,7 @@
     </Compile>
     <Compile Include="Provider\FacebookProvider.cs" />
     <Compile Include="Provider\GoogleAuthProvider.cs" />
+    <Compile Include="Provider\RssProvider.cs" />
     <Compile Include="Result\ChallengeResult.cs" />
     <Compile Include="Controller\AccountController.cs" />
     <Compile Include="Controller\OrdersController.cs" />

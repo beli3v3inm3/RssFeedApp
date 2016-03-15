@@ -21,6 +21,8 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li ng-hide="!authentication.isAuth"><a href="#">Welcome {{authentication.userName}}</a></li>
                     <li ng-hide="!authentication.isAuth"><a href="#/orders">My Orders</a></li>
+                    <li ng-hide="!authentication.isAuth"><a href="#/feed">RSS Feed</a></li>
+                    <li ng-hide="!authentication.isAuth"><a href="#/viewfeed">View all RSS</a></li>
                     <li ng-hide="!authentication.isAuth"><a href="#/refresh">Refresh Token</a></li>
                     <li ng-hide="!authentication.isAuth"><a href="" ng-click="logOut()">Logout</a></li>
                     <li ng-hide="authentication.isAuth"> <a href="#/login">Login</a></li>
@@ -66,6 +68,7 @@
     <script src="App/Services/AuthService.js"></script>
     <script src="App/Services/OrdersService.js"></script>
     <script src="App/Services/TokenManagerService.js"></script>
+    <script src="App/Services/RssFeedService.js"></script>
 
     <script src="App/Controllers/IndexController.js"></script>
     <script src="App/Controllers/HomeController.js"></script>
@@ -74,6 +77,8 @@
     <script src="App/Controllers/OrdersController.js"></script>
     <script src="App/Controllers/TokenManagerController.js"></script>
     <script src="App/Controllers/RefreshController.js"></script>
+    <script src="App/Controllers/RssFeedController.js"></script>
     <script src="App/Controllers/AssociateController.js"></script>
+    <script src="App/Controllers/ViewRssFeedController.js"></script>
 </body>
 </html>

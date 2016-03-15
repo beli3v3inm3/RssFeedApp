@@ -41,5 +41,25 @@ namespace RssFeedApp.Properties {
                 return ((string)(this["RealEstateDatabaseName"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("rssdb")]
+        public string RssDatabaseName {
+            get {
+                return ((string)(this["RssDatabaseName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(localdb)\\mssqllocaldb;Initial Catalog=RSSDB;Integrated Security=SSPI" +
+            ";")]
+        public string RssConnectionString {
+            get {
+                return ((string)(this["RssConnectionString"]));
+            }
+        }
     }
 }

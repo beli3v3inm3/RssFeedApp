@@ -1,44 +1,41 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Results;
 using MongoDB.Bson;
 using RssFeedApp.Models;
+using RssFeedApp.Provider;
 
 namespace RssFeedApp.Controller
 {
     [RoutePrefix("api/rssreader")]
     public class RssReaderController : ApiController
     {
-        private readonly UserRepository _repository;
-
+        private readonly RssProvider _rssProvider;
+       
         public RssReaderController()
         {
-            _repository = new UserRepository();
+            _rssProvider = new RssProvider();
         }
 
-        //[Authorize]
-        //[Route("")]
-        //public async Task<IHttpActionResult> GetDbInfo()
-        //{
-        //    var buildInfoCOmmand = new BsonDocument("buildinfo", 1);
-        //    var buildInfo = await _context.MongoDatabase.RunCommandAsync<BsonDocument>(buildInfoCOmmand);
-        //    return Json(buildInfo);
-        //}
-
-        [AllowAnonymous]
-        [Route("Register")]
-        public async Task<IHttpActionResult> RegisterTask(UserModel userModel)
+        [Authorize]
+        [Route("AddFeed")]
+        public IHttpActionResult AddFeed(RssFeed rssFeed)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _repository.RegisterTask(userModel);
-
+            _rssProvider.AddFeed(rssFeed);
+            
             return Ok();
         }
 
-
-
+        [Authorize]
+        public IHttpActionResult Get()
+        {
+            var rssFeed = new RssFeed();
+            return Ok(_rssProvider.GetRssFeed(rssFeed));
+        }
     }
 }

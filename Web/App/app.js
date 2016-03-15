@@ -37,6 +37,15 @@ app.config(function ($routeProvider) {
         templateUrl: "/App/Views/Associate.html"
     });
 
+    $routeProvider.when("/feed", {
+        controller: "RssFeedController",
+        templateUrl: "/App/Views/AddFeed.html"
+    });
+
+    $routeProvider.when("/viewfeed", {
+        controller: "ViewRssFeedController",
+        templateUrl: "/App/Views/ViewFeed.html"
+    });
     $routeProvider.otherwise({ redirectTo: "/home" });
 });
 
