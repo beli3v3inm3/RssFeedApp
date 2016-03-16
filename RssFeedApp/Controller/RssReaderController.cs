@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.Http.Results;
-using MongoDB.Bson;
+﻿using System.Web.Http;
 using RssFeedApp.Models;
 using RssFeedApp.Provider;
 
@@ -14,7 +11,7 @@ namespace RssFeedApp.Controller
        
         public RssReaderController()
         {
-            _rssProvider = new RssProvider();
+            _rssProvider = RssProvider.GetInstance;
         }
 
         [Authorize]

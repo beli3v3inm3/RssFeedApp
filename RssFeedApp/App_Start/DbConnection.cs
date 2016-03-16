@@ -4,13 +4,13 @@ using RssFeedApp.Properties;
 
 namespace RssFeedApp
 {
-    public class RssConnection : IDisposable
+    public class DbConnection : IDisposable
     {
         private readonly string _conString = Settings.Default.RssConnectionString;
         public SqlConnection Connection;
         public SqlCommand SqlCommand;
 
-        public RssConnection()
+        public DbConnection()
         {
             Connection = new SqlConnection(_conString);
             SqlCommand = new SqlCommand();
@@ -18,7 +18,8 @@ namespace RssFeedApp
 
         public void Dispose()
         {
-            Connection.Close();
+            Connection.Dispose();
+            SqlCommand.Dispose();
         }
     }
 }

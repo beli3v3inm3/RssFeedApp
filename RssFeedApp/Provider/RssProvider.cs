@@ -7,59 +7,77 @@ namespace RssFeedApp.Provider
 {
     public class RssProvider
     {
-        private readonly RssConnection _connection;
-        private SyndicationFeed _feed;
+        private static RssProvider _instance;
 
-        public RssProvider()
-        {
-            _connection = new RssConnection();
-        }
+        private RssProvider() { }
+
+        public static RssProvider GetInstance => _instance ?? (_instance = new RssProvider());
 
         public void AddFeed(RssFeed rssFeed)
         {
-            var reader = new XmlTextReader(rssFeed.Url);
-            _feed = SyndicationFeed.Load(reader);
-
-            _connection.Connection.Open();
-            _connection.SqlCommand.Connection = _connection.Connection;
-
-            _connection.SqlCommand.CommandText = "insert into Feed(url, title, body) values(@url, @title, @body)";
-
-            //_connection.SqlCommand.Parameters.AddWithValue("@url", rssFeed.Url);
-
-            if (_feed != null)
+            using (var connection = new DbConnection())
             {
-                foreach (var item in _feed.Items)
+                connection.Connection.Open();
+                connection.SqlCommand.Connection = connection.Connection;
+
+                connection.SqlCommand.CommandText = "insert into Feed(url, title, body) values(@url, @title, @body)";
+                if (rssFeed.Url != null)
                 {
-                    _connection.SqlCommand.Parameters.AddWithValue("@url", rssFeed.Url);
-                    _connection.SqlCommand.Parameters.AddWithValue("@title", item.Title.Text);
-                    _connection.SqlCommand.Parameters.AddWithValue("@body", item.Summary.Text);
-                    _connection.SqlCommand.ExecuteNonQuery();
-                    _connection.SqlCommand.Parameters.Clear();
+                    var reader = new XmlTextReader(rssFeed.Url);
+                    var feed = SyndicationFeed.Load(reader);
+
+                    if (feed == null) return;
+                    foreach (var item in feed.Items)
+                    {
+                        connection.SqlCommand.Parameters.AddWithValue("@url", rssFeed.Url);
+                        connection.SqlCommand.Parameters.AddWithValue("@title", item.Title.Text);
+                        connection.SqlCommand.Parameters.AddWithValue("@body", item.Summary.Text);
+                        connection.SqlCommand.Parameters.AddWithValue("@body", item.Summary.Text);
+                        connection.SqlCommand.ExecuteNonQuery();
+                        connection.SqlCommand.Parameters.Clear();
+                    }
+                }
+                else
+                {
+                    //connection.SqlCommand.Parameters.AddWithValue("@url", rssFeed.Url);
+                    //connection.SqlCommand.Parameters.AddWithValue("@title", item.Title.Text);
+                    //connection.SqlCommand.Parameters.AddWithValue("@body", item.Summary.Text);
+                    //connection.SqlCommand.ExecuteNonQuery();
                 }
             }
-
-
-            _connection.Dispose();
         }
 
         public IEnumerable<RssFeed> GetRssFeed(RssFeed rssFeed)
         {
-            _connection.Connection.Open();
-            _connection.SqlCommand.Connection = _connection.Connection;
-
-            _connection.SqlCommand.CommandText = "select * from feed";
-            var reader = _connection.SqlCommand.ExecuteReader();
-            while (reader.Read())
+            using (var connection = new DbConnection())
             {
-                rssFeed.Url = reader["url"].ToString();
-                rssFeed.Title = reader["title"].ToString();
-                rssFeed.Body = reader["body"].ToString();
-                yield return rssFeed;
-            }
-            _connection.Dispose();
+                connection.Connection.Open();
+                connection.SqlCommand.Connection = connection.Connection;
 
+                connection.SqlCommand.CommandText = "select * from feed";
+                var reader = connection.SqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    rssFeed.Url = reader["url"].ToString();
+                    rssFeed.Title = reader["title"].ToString();
+                    rssFeed.Body = reader["body"].ToString();
+                    yield return rssFeed;
+                }
+            }
             yield return rssFeed;
+        }
+
+        public void RemoveFeed(RssFeed rssFeed)
+        {
+            using (var connection = new DbConnection())
+            {
+                connection.Connection.Open();
+                connection.SqlCommand.Connection = connection.Connection;
+
+                connection.SqlCommand.CommandText = "delete from feed where id = @id";
+                connection.SqlCommand.Parameters.AddWithValue("id", rssFeed.Id);
+                connection.SqlCommand.ExecuteNonQuery();
+            }
         }
     }
 }

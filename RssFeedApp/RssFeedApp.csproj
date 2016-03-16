@@ -212,33 +212,23 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\RssConnection.cs" />
+    <Compile Include="App_Start\DbConnection.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controller\RssReaderController.cs" />
     <Compile Include="Entities\RefreshToken.cs" />
-    <Compile Include="Models\ExternalLoginModels.cs" />
-    <Compile Include="App_Start\RealEstateContext.cs" />
-    <Compile Include="Models\IUserSessionProvider.cs" />
     <Compile Include="Models\RssFeed.cs" />
     <Compile Include="Models\IUserRepository.cs" />
-    <Compile Include="Models\UserRepository.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Provider\FacebookProvider.cs" />
-    <Compile Include="Provider\GoogleAuthProvider.cs" />
     <Compile Include="Provider\RssProvider.cs" />
+    <Compile Include="Provider\UserProvider.cs" />
     <Compile Include="Result\ChallengeResult.cs" />
     <Compile Include="Controller\AccountController.cs" />
-    <Compile Include="Controller\OrdersController.cs" />
-    <Compile Include="Controller\RefreshTokensController.cs" />
     <Compile Include="Entities\Client.cs" />
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Enum.cs" />
-    <Compile Include="Models\AuthContext.cs" />
-    <Compile Include="Models\AuthRepository.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Provider\Helper.cs" />

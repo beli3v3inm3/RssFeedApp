@@ -13,11 +13,11 @@ namespace RssFeedApp.Provider
 {
     public class SimpleAuthorizationServerProvider : OAuthAuthorizationServerProvider
     {
-        private readonly UserRepository _repository;
+        private readonly UserProvider _repository;
 
         public SimpleAuthorizationServerProvider()
         {
-            _repository = new UserRepository();
+            _repository = UserProvider.GetInstance;
         }
 
         public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)

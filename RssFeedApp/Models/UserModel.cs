@@ -6,7 +6,7 @@ namespace RssFeedApp.Models
 {
     public class UserModel
     {
-        [BsonRepresentation(BsonType.ObjectId)]
+        [Key]
         public string Id { get; set; }
 
         [Required]
