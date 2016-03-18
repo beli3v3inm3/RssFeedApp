@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ServiceModel.Syndication;
 using System.Xml;
 using RssFeedApp.Models;
@@ -7,20 +8,33 @@ namespace RssFeedApp.Provider
 {
     public class RssProvider
     {
-        private static RssProvider _instance;
+        private static volatile RssProvider _instance;
+        private static readonly object SyncRoot = new object();
 
         private RssProvider() { }
 
-        public static RssProvider GetInstance => _instance ?? (_instance = new RssProvider());
+        public static RssProvider GetInstance
+        {
+            get
+            {
+                if (_instance != null) return _instance;
+                lock (SyncRoot)
+                {
+                    if (_instance == null)
+                        _instance = new RssProvider();
+                }
+
+                return _instance;
+            }
+        }
 
         public void AddFeed(RssFeed rssFeed)
         {
             using (var connection = new DbConnection())
             {
                 connection.Connection.Open();
-                connection.SqlCommand.Connection = connection.Connection;
 
-                connection.SqlCommand.CommandText = "insert into Feed(url, title, body) values(@url, @title, @body)";
+                connection.SqlCommand.CommandText = "insert into Feed(url, title, body, link) values(@url, @title, @body, @link); insert into userstofeed(userid, feedid)";
                 if (rssFeed.Url != null)
                 {
                     var reader = new XmlTextReader(rssFeed.Url);
@@ -32,7 +46,7 @@ namespace RssFeedApp.Provider
                         connection.SqlCommand.Parameters.AddWithValue("@url", rssFeed.Url);
                         connection.SqlCommand.Parameters.AddWithValue("@title", item.Title.Text);
                         connection.SqlCommand.Parameters.AddWithValue("@body", item.Summary.Text);
-                        connection.SqlCommand.Parameters.AddWithValue("@body", item.Summary.Text);
+                        connection.SqlCommand.Parameters.AddWithValue("@link", item.Id);
                         connection.SqlCommand.ExecuteNonQuery();
                         connection.SqlCommand.Parameters.Clear();
                     }
@@ -77,6 +91,21 @@ namespace RssFeedApp.Provider
                 connection.SqlCommand.CommandText = "delete from feed where id = @id";
                 connection.SqlCommand.Parameters.AddWithValue("id", rssFeed.Id);
                 connection.SqlCommand.ExecuteNonQuery();
+            }
+        }
+
+        public void AddFeedByItem(RssFeed rssFeed)
+        {
+            using (var context = new DbConnection())
+            {
+                context.Connection.Open();
+
+                context.SqlCommand.CommandText = "insert into feed(title, body, link) values(@title, @body, @link)";
+
+                context.SqlCommand.Parameters.AddWithValue("@title", rssFeed.Title);
+                context.SqlCommand.Parameters.AddWithValue("@body", rssFeed.Body);
+                context.SqlCommand.Parameters.AddWithValue("@link", rssFeed.Link);
+                context.SqlCommand.ExecuteNonQuery();
             }
         }
     }

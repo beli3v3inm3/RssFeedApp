@@ -37,7 +37,7 @@ namespace RssFeedApp
                 TokenEndpointPath = new PathString("/token"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(30),
                 Provider = new SimpleAuthorizationServerProvider(),
-                //RefreshTokenProvider = new SimpleRefreshTokenProvider()
+                RefreshTokenProvider = new SimpleRefreshTokenProvider()
             };
             app.UseOAuthAuthorizationServer(oAuthServerOptions);
             app.UseOAuthBearerAuthentication(OAuthBearerOptions);

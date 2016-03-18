@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity.Core.Metadata.Edm;
+﻿using System;
 using System.Threading.Tasks;
-using MongoDB.Driver;
 using RssFeedApp.Entities;
 using RssFeedApp.Models;
 
@@ -9,12 +7,25 @@ namespace RssFeedApp.Provider
 {
     public class UserProvider : IUserRepository
     {
-
-        private static UserProvider _instance;
+        private static volatile UserProvider _instance;
+        private static readonly object SyncRoot = new object();
 
         private UserProvider() { }
 
-        public static UserProvider GetInstance => _instance ?? (_instance = new UserProvider());
+        public static UserProvider GetInstance
+        {
+            get
+            {
+                if (_instance != null) return _instance;
+                lock (SyncRoot)
+                {
+                    if (_instance == null)
+                        _instance = new UserProvider();
+                }
+
+                return _instance;
+            }
+        }
 
         public UserModel RegisterTask(UserModel userModel)
         {
@@ -41,22 +52,22 @@ namespace RssFeedApp.Provider
             return user;
         }
 
-        public async Task<UserModel> FindUserTask(string userName, string password)
+        public async Task<string> FindUserTask(string userName, string password)
         {
-            UserModel user = null;
+            string user = null;
             using (var context = new DbConnection())
             {
                 context.Connection.Open();
                 context.SqlCommand.Connection = context.Connection;
 
-                context.SqlCommand.CommandText = "select * from users where username = @username && password = @password";
+                context.SqlCommand.CommandText = "select * from users where name = @username and password = @password";
                 context.SqlCommand.Parameters.AddWithValue("@username", userName);
                 context.SqlCommand.Parameters.AddWithValue("@password", password);
 
                 var reader = await context.SqlCommand.ExecuteReaderAsync();
                 while (reader.Read())
                 {
-                    user = (UserModel) reader["username"];
+                    user = reader["name"].ToString();
                 }
             }
             return user;
@@ -80,54 +91,111 @@ namespace RssFeedApp.Provider
                 }
             }
             return user;
-        } 
+        }
 
-        //public async Task<RefreshToken> AddRefreshToken(RefreshToken token)
-        //{
-        //    using (var context = new DbConnection())
-        //    {
-        //        var existingToken = context.RefreshTokenCollection.Find(
-        //        Builders<RefreshToken>.Filter.Where(r => r.Subject == token.Subject && r.ClientId == token.ClientId))
-        //        .SingleOrDefault();
-        //        context.Connection.Open();
-        //        context.SqlCommand.Connection = context.Connection;
+        public UserModel GetUserId(string userName)
+        {
+            UserModel user = null;
+            using (var context = new DbConnection())
+            {
+                context.Connection.Open();
 
-        //        context.SqlCommand.CommandText = "select * from refreshtoken where subject = @subject && clientid = @clientid";
-        //        context.SqlCommand.Parameters.AddWithValue("@subject", token.Subject);
-        //        context.SqlCommand.Parameters.AddWithValue("@clientId", token.ClientId);
+                context.SqlCommand.CommandText = "select id from users where name = @userName";
 
-        //        var reader = context.SqlCommand.ExecuteReader();
-        //        if (existingToken != null)
-        //        {
-        //            RemoveRefreshToken(existingToken);
-        //        }
+                context.SqlCommand.Parameters.AddWithValue("@userName", userName);
 
-        //        await context.RefreshTokenCollection.InsertOneAsync(token);
-        //    }
+                var reader = context.SqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    user = reader["id"] as UserModel;
+                }
+            }
 
+            return user;
+        }
 
-        //    return existingToken;
-        //}
+        public async Task<RefreshToken> AddRefreshToken(RefreshToken token)
+        {
+            RefreshToken existingToken = null;
+            using (var context = new DbConnection())
+            {
 
-        //public RefreshToken RemoveRefreshToken(string refreshTokenId)
-        //{
-        //    var refreshToken = _context.RefreshTokenCollection.Find(Builders<RefreshToken>.Filter.Where(r => r.Id == refreshTokenId))
-        //        .FirstOrDefault();
+                context.Connection.Open();
+                context.SqlCommand.Connection = context.Connection;
 
-        //    if (refreshToken == null) return null;
+                context.SqlCommand.CommandText = "select * from refreshtokens where subject = @subject && clientid = @clientid";
+                context.SqlCommand.Parameters.AddWithValue("@subject", token.Subject);
+                context.SqlCommand.Parameters.AddWithValue("@clientid", token.ClientId);
 
-        //    return _context.RefreshTokenCollection.FindOneAndDelete(
-        //        Builders<RefreshToken>.Filter.Where(r => r.Id == refreshTokenId));
-        //}
+                var reader = await context.SqlCommand.ExecuteReaderAsync();
+                while (reader.Read())
+                {
+                    existingToken = (RefreshToken)reader["subject"];
+                }
+                if (existingToken != null)
+                {
+                    await RemoveRefreshToken(existingToken.ToString());
+                }
+                context.SqlCommand.Parameters.Clear();
+                context.SqlCommand.CommandText = "insert into refreshtokens(id, subject, clientid, issuedutc, expiredutc, protectedticket) values(@id, @subject, @clientid, @issuedutc, @expiredutc, @protectedticket)";
+                context.SqlCommand.Parameters.AddWithValue("@id", token.Id);
+                context.SqlCommand.Parameters.AddWithValue("@subject", token.Subject);
+                context.SqlCommand.Parameters.AddWithValue("@clientid", token.ClientId);
+                context.SqlCommand.Parameters.AddWithValue("@issuedutc", token.IssuedUtc);
+                context.SqlCommand.Parameters.AddWithValue("@expiredutc", token.ExpiresUtc);
+                context.SqlCommand.Parameters.AddWithValue("@protectedticket", token.ProtectedTicket);
 
-        //public void RemoveRefreshToken(RefreshToken refreshToken)
-        //{
-        //    _context.RefreshTokenCollection.DeleteOne(r => r.Id == refreshToken.Id);
-        //}
+                context.SqlCommand.ExecuteNonQuery();
+            }
 
-        //public async Task<RefreshToken> FindRefreshToken(string refreshTokenId) => await _context.RefreshTokenCollection.Find(Builders<RefreshToken>.Filter.Where(r => r.Id == refreshTokenId)).FirstOrDefaultAsync();
+            return existingToken;
+        }
 
-        //public async Task<List<RefreshToken>> GetAllRefreshTokens() => await _context.RefreshTokenCollection.Find(Builders<RefreshToken>.Filter.Empty).ToListAsync();
+        public async Task RemoveRefreshToken(string refreshTokenId)
+        {
+            using (var context = new DbConnection())
+            {
+                context.Connection.Open();
+                context.SqlCommand.Connection = context.Connection;
+
+                context.SqlCommand.CommandText = "delete from refreshtokens where id = @refreshtoken";
+                context.SqlCommand.Parameters.AddWithValue("@refreshtoken", refreshTokenId);
+                await context.SqlCommand.ExecuteNonQueryAsync();
+            }
+        }
+
+        public void RemoveRefreshToken(RefreshToken refreshToken)
+        {
+            using (var context = new DbConnection())
+            {
+                context.Connection.Open();
+                context.SqlCommand.Connection = context.Connection;
+
+                context.SqlCommand.CommandText = "delete from refreshtokens where id = @refreshtoken";
+                context.SqlCommand.Parameters.AddWithValue("@refreshtoken", refreshToken.Id);
+                context.SqlCommand.ExecuteNonQuery();
+            }
+        }
+
+        public RefreshToken FindRefreshToken(string refreshTokenId)
+        {
+            RefreshToken refreshToken = null;
+            using (var context = new DbConnection())
+            {
+                context.Connection.Open();
+                context.SqlCommand.Connection = context.Connection;
+
+                context.SqlCommand.CommandText = "select * from refreshtokens where id = @refreshtoken";
+                context.SqlCommand.Parameters.AddWithValue("@refreshtoken", refreshTokenId);
+                var reader = context.SqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    refreshToken = (RefreshToken) reader["id"];
+                }
+            }
+            return refreshToken;
+        }
+
 
     }
 }

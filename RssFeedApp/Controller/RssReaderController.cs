@@ -16,7 +16,7 @@ namespace RssFeedApp.Controller
 
         [Authorize]
         [Route("AddFeed")]
-        public IHttpActionResult AddFeed(RssFeed rssFeed)
+        public IHttpActionResult AddFeedByUrl(RssFeed rssFeed)
         {
             if (!ModelState.IsValid)
             {
@@ -33,6 +33,19 @@ namespace RssFeedApp.Controller
         {
             var rssFeed = new RssFeed();
             return Ok(_rssProvider.GetRssFeed(rssFeed));
+        }
+
+        [Authorize]
+        public IHttpActionResult AddFeedByItem(RssFeed rssFeed)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _rssProvider.AddFeedByItem(rssFeed);
+
+            return Ok();
         }
     }
 }
