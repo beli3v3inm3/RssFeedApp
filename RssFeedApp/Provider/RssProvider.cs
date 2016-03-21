@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.ServiceModel.Syndication;
+using System.Web;
 using System.Xml;
 using RssFeedApp.Models;
 
@@ -9,6 +11,7 @@ namespace RssFeedApp.Provider
     public class RssProvider
     {
         private static volatile RssProvider _instance;
+        private readonly UserProvider _userProvider = UserProvider.GetInstance;
         private static readonly object SyncRoot = new object();
 
         private RssProvider() { }
@@ -28,35 +31,30 @@ namespace RssFeedApp.Provider
             }
         }
 
-        public void AddFeed(RssFeed rssFeed)
+        public void AddFeed(UrlFeed urlFeed)
         {
             using (var connection = new DbConnection())
             {
+                var reader = new XmlTextReader(urlFeed.Url);
+                var feed = SyndicationFeed.Load(reader);
+                var user = HttpContext.Current.User.Identity.Name;
+
                 connection.Connection.Open();
+                connection.SqlCommand.Connection = connection.Connection;
 
-                connection.SqlCommand.CommandText = "insert into Feed(url, title, body, link) values(@url, @title, @body, @link); insert into userstofeed(userid, feedid)";
-                if (rssFeed.Url != null)
+                connection.SqlCommand.CommandText = "spAddItemByUrl";
+                connection.SqlCommand.CommandType = CommandType.StoredProcedure;
+                if (feed == null) return;
+                foreach (var item in feed.Items)
                 {
-                    var reader = new XmlTextReader(rssFeed.Url);
-                    var feed = SyndicationFeed.Load(reader);
-
-                    if (feed == null) return;
-                    foreach (var item in feed.Items)
-                    {
-                        connection.SqlCommand.Parameters.AddWithValue("@url", rssFeed.Url);
-                        connection.SqlCommand.Parameters.AddWithValue("@title", item.Title.Text);
-                        connection.SqlCommand.Parameters.AddWithValue("@body", item.Summary.Text);
-                        connection.SqlCommand.Parameters.AddWithValue("@link", item.Id);
-                        connection.SqlCommand.ExecuteNonQuery();
-                        connection.SqlCommand.Parameters.Clear();
-                    }
-                }
-                else
-                {
-                    //connection.SqlCommand.Parameters.AddWithValue("@url", rssFeed.Url);
-                    //connection.SqlCommand.Parameters.AddWithValue("@title", item.Title.Text);
-                    //connection.SqlCommand.Parameters.AddWithValue("@body", item.Summary.Text);
-                    //connection.SqlCommand.ExecuteNonQuery();
+                    connection.SqlCommand.Parameters.AddWithValue("@url", urlFeed.Url);
+                    connection.SqlCommand.Parameters.AddWithValue("@title", item.Title.Text);
+                    connection.SqlCommand.Parameters.AddWithValue("@body", item.Summary.Text);
+                    connection.SqlCommand.Parameters.AddWithValue("@link", item.Id);
+                    connection.SqlCommand.Parameters.AddWithValue("@userName", user);
+                    connection.SqlCommand.Parameters.AddWithValue("@isRead", false);
+                    connection.SqlCommand.ExecuteNonQuery();
+                    connection.SqlCommand.Parameters.Clear();
                 }
             }
         }
@@ -72,9 +70,9 @@ namespace RssFeedApp.Provider
                 var reader = connection.SqlCommand.ExecuteReader();
                 while (reader.Read())
                 {
-                    rssFeed.Url = reader["url"].ToString();
                     rssFeed.Title = reader["title"].ToString();
                     rssFeed.Body = reader["body"].ToString();
+                    rssFeed.Link = reader["link"].ToString();
                     yield return rssFeed;
                 }
             }
@@ -96,15 +94,21 @@ namespace RssFeedApp.Provider
 
         public void AddFeedByItem(RssFeed rssFeed)
         {
+
             using (var context = new DbConnection())
             {
                 context.Connection.Open();
+                context.SqlCommand.Connection = context.Connection;
+                var user = HttpContext.Current.User.Identity.Name;
 
-                context.SqlCommand.CommandText = "insert into feed(title, body, link) values(@title, @body, @link)";
+                context.SqlCommand.CommandText = "spAddFeedByItem";
+                context.SqlCommand.CommandType = CommandType.StoredProcedure;
 
                 context.SqlCommand.Parameters.AddWithValue("@title", rssFeed.Title);
-                context.SqlCommand.Parameters.AddWithValue("@body", rssFeed.Body);
+                context.SqlCommand.Parameters.AddWithValue("body", rssFeed.Body);
                 context.SqlCommand.Parameters.AddWithValue("@link", rssFeed.Link);
+                context.SqlCommand.Parameters.AddWithValue("@userName", user);
+                context.SqlCommand.Parameters.AddWithValue("@isRead", false);
                 context.SqlCommand.ExecuteNonQuery();
             }
         }

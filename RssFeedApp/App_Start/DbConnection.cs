@@ -13,7 +13,7 @@ namespace RssFeedApp
         public DbConnection()
         {
             Connection = new SqlConnection(_conString);
-            SqlCommand.Connection = Connection;
+            SqlCommand = new SqlCommand();
         }
 
         public void Dispose()

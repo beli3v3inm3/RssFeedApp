@@ -16,14 +16,14 @@ namespace RssFeedApp.Controller
 
         [Authorize]
         [Route("AddFeed")]
-        public IHttpActionResult AddFeedByUrl(RssFeed rssFeed)
+        public IHttpActionResult AddFeedByUrl(UrlFeed urlFeed)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _rssProvider.AddFeed(rssFeed);
+            _rssProvider.AddFeed(urlFeed);
             
             return Ok();
         }
