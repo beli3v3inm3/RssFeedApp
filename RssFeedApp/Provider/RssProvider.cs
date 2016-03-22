@@ -59,26 +59,33 @@ namespace RssFeedApp.Provider
             }
         }
 
+        //fix
         public IEnumerable<RssFeed> GetRssFeed(RssFeed rssFeed)
         {
             using (var connection = new DbConnection())
             {
+                var user = HttpContext.Current.User.Identity.Name;
+
                 connection.Connection.Open();
                 connection.SqlCommand.Connection = connection.Connection;
 
-                connection.SqlCommand.CommandText = "select * from feed";
+                connection.SqlCommand.CommandText = "spGetItemsByUser";
+                connection.SqlCommand.CommandType = CommandType.StoredProcedure;
+                connection.SqlCommand.Parameters.AddWithValue("@userName", user);
                 var reader = connection.SqlCommand.ExecuteReader();
                 while (reader.Read())
                 {
                     rssFeed.Title = reader["title"].ToString();
                     rssFeed.Body = reader["body"].ToString();
                     rssFeed.Link = reader["link"].ToString();
+                    rssFeed.IsRead = (bool) reader["isread"];
                     yield return rssFeed;
                 }
             }
             yield return rssFeed;
         }
 
+        //fix
         public void RemoveFeed(RssFeed rssFeed)
         {
             using (var connection = new DbConnection())
@@ -94,7 +101,6 @@ namespace RssFeedApp.Provider
 
         public void AddFeedByItem(RssFeed rssFeed)
         {
-
             using (var context = new DbConnection())
             {
                 context.Connection.Open();
@@ -109,6 +115,22 @@ namespace RssFeedApp.Provider
                 context.SqlCommand.Parameters.AddWithValue("@link", rssFeed.Link);
                 context.SqlCommand.Parameters.AddWithValue("@userName", user);
                 context.SqlCommand.Parameters.AddWithValue("@isRead", false);
+                context.SqlCommand.ExecuteNonQuery();
+            }
+        }
+
+        public void SetReadItem(RssFeed rssFeed)
+        {
+            using (var context = new DbConnection())
+            {
+                context.Connection.Open();
+                context.SqlCommand.Connection = context.Connection;
+
+                context.SqlCommand.CommandText = "spReadFeedItemEdit";
+                context.SqlCommand.CommandType = CommandType.StoredProcedure;
+
+                context.SqlCommand.Parameters.AddWithValue("@feeId", rssFeed.Id);
+                context.SqlCommand.Parameters.AddWithValue("@isRead", true);
                 context.SqlCommand.ExecuteNonQuery();
             }
         }
