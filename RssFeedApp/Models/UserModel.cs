@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 
 namespace RssFeedApp.Models
 {
@@ -23,5 +21,8 @@ namespace RssFeedApp.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        public byte[] Salt { get; set; }
+        public byte[] HashedPassword { get; set; }
     }
 }

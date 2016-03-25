@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web.Configuration;
+using System.Web.Security;
 using RssFeedApp.Entities;
 using RssFeedApp.Models;
 
@@ -29,28 +34,32 @@ namespace RssFeedApp.Provider
 
         public UserModel RegisterTask(UserModel userModel)
         {
+            var salt = CreateSalt();
+            var hashedPassword = CreatePasswordHash(userModel.Password, salt);
             var user = new UserModel
             {
                 UserName = userModel.UserName,
-                Password = userModel.Password,
-                ConfirmPassword = userModel.ConfirmPassword
+                HashedPassword = hashedPassword,
+                Salt = salt
             };
             using (var context = new DbConnection())
             {
                 context.Connection.Open();
                 context.SqlCommand.Connection = context.Connection;
 
-                context.SqlCommand.CommandText = "insert into users(name, password, confirmpassword) values(@name, @password, @confirmpassword)";
+                context.SqlCommand.CommandText = "insert into users(name, password, salt) values(@name, @password, @salt)";
 
-                context.SqlCommand.Parameters.AddWithValue("@name", userModel.UserName);
-                context.SqlCommand.Parameters.AddWithValue("@password", userModel.Password);
-                context.SqlCommand.Parameters.AddWithValue("@confirmpassword", userModel.ConfirmPassword);
+                context.SqlCommand.Parameters.AddWithValue("@name", user.UserName);
+                context.SqlCommand.Parameters.AddWithValue("@password", hashedPassword);
+                context.SqlCommand.Parameters.AddWithValue("@salt", user.Salt);
 
                 context.SqlCommand.ExecuteNonQuery();
             }
+            ConfirmPassword(userModel.Password);
 
             return user;
         }
+
 
         public async Task<string> FindUserTask(string userName, string password)
         {
@@ -196,6 +205,78 @@ namespace RssFeedApp.Provider
             return refreshToken;
         }
 
+        private static byte[] CreateSalt()
+        {
+            var byteArr = new byte[64];
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(byteArr);
+            }
+
+            return byteArr;
+        }
+
+        private static byte[] CreatePasswordHash(string password, byte[] salt)
+        {
+            var pwdToBytes = Encoding.ASCII.GetBytes(password);
+            HashAlgorithm hashAlgorithm;
+            var pwdWithSalt = new byte[pwdToBytes.Length + salt.Length];
+
+            for (var i = 0; i < pwdToBytes.Length; i++)
+            {
+                pwdWithSalt[i] = pwdToBytes[i];
+            }
+            for (var i = 0; i < salt.Length; i++)
+            {
+                pwdWithSalt[pwdToBytes.Length + i] = salt[i];
+            }
+
+            using (hashAlgorithm = new SHA256Managed())
+            {
+                return hashAlgorithm.ComputeHash(pwdWithSalt);
+            }
+        }
+
+        public static byte[] Hash(string value, byte[] salt)
+        {
+            salt = new byte[64];
+            //    using (var rng = new RNGCryptoServiceProvider())
+            //    {
+            //        rng.GetBytes(byteArr);
+            //    }
+            return Hash(Encoding.UTF8.GetBytes(value), salt);
+        }
+
+        public static byte[] Hash(byte[] value, byte[] salt)
+        {
+            var saltedValue = value.Concat(salt).ToArray();
+            // Alternatively use CopyTo.
+            //var saltedValue = new byte[value.Length + salt.Length];
+            //value.CopyTo(saltedValue, 0);
+            //salt.CopyTo(saltedValue, value.Length);
+
+            return new SHA256Managed().ComputeHash(saltedValue);
+        }
+
+        public bool ConfirmPassword(string password)
+        {
+            var passwordSalt = new byte[64];
+            using (var context = new DbConnection())
+            {
+                context.Connection.Open();
+                context.SqlCommand.Connection = context.Connection;
+
+                context.SqlCommand.CommandText = "select salt from users where name='test'";
+                var reader = context.SqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    passwordSalt = reader["salt"] as byte[];
+                }
+            }
+            var passwordHash = Hash(password, passwordSalt);
+
+            return passwordHash.SequenceEqual(passwordHash);
+        }
 
     }
 }
