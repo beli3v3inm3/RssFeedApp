@@ -41,8 +41,12 @@ namespace RssFeedApp.Provider
 
                 connection.Connection.Open();
                 connection.SqlCommand.Connection = connection.Connection;
+                connection.SqlCommand.CommandText = "insert into feed(url) values(@url)";
+                connection.SqlCommand.Parameters.AddWithValue("@url", urlFeed.Url);
+                connection.SqlCommand.ExecuteNonQuery();
+                connection.SqlCommand.Parameters.Clear();
 
-                connection.SqlCommand.CommandText = "spAddItemByUrl";
+                connection.SqlCommand.CommandText = "spAddFeedItems";
                 connection.SqlCommand.CommandType = CommandType.StoredProcedure;
                 if (feed == null) return;
                 foreach (var item in feed.Items)

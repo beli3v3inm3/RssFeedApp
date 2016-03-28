@@ -35,7 +35,7 @@ namespace RssFeedApp.Provider
         public UserModel RegisterTask(UserModel userModel)
         {
             var salt = CreateSalt();
-            var hashedPassword = CreatePasswordHash(userModel.Password, salt);
+            var hashedPassword = Hash(userModel.Password, salt);
             var user = new UserModel
             {
                 UserName = userModel.UserName,
@@ -55,7 +55,6 @@ namespace RssFeedApp.Provider
 
                 context.SqlCommand.ExecuteNonQuery();
             }
-            ConfirmPassword(userModel.Password);
 
             return user;
         }
@@ -64,14 +63,18 @@ namespace RssFeedApp.Provider
         public async Task<string> FindUserTask(string userName, string password)
         {
             string user = null;
+            var correctCredentials = ConfirmPassword(userName, password);
+            if (correctCredentials == false)
+            {
+                return null;
+            }
             using (var context = new DbConnection())
             {
                 context.Connection.Open();
                 context.SqlCommand.Connection = context.Connection;
 
-                context.SqlCommand.CommandText = "select * from users where name = @username and password = @password";
+                context.SqlCommand.CommandText = "select * from users where name = @username";
                 context.SqlCommand.Parameters.AddWithValue("@username", userName);
-                context.SqlCommand.Parameters.AddWithValue("@password", password);
 
                 var reader = await context.SqlCommand.ExecuteReaderAsync();
                 while (reader.Read())
@@ -207,75 +210,49 @@ namespace RssFeedApp.Provider
 
         private static byte[] CreateSalt()
         {
-            var byteArr = new byte[64];
+            var userSalt = new byte[64];
             using (var rng = new RNGCryptoServiceProvider())
             {
-                rng.GetBytes(byteArr);
+                rng.GetBytes(userSalt);
             }
 
-            return byteArr;
+            return userSalt;
         }
 
-        private static byte[] CreatePasswordHash(string password, byte[] salt)
+        public static byte[] Hash(string userPassword, byte[] salt)
         {
-            var pwdToBytes = Encoding.ASCII.GetBytes(password);
-            HashAlgorithm hashAlgorithm;
-            var pwdWithSalt = new byte[pwdToBytes.Length + salt.Length];
-
-            for (var i = 0; i < pwdToBytes.Length; i++)
-            {
-                pwdWithSalt[i] = pwdToBytes[i];
-            }
-            for (var i = 0; i < salt.Length; i++)
-            {
-                pwdWithSalt[pwdToBytes.Length + i] = salt[i];
-            }
-
-            using (hashAlgorithm = new SHA256Managed())
-            {
-                return hashAlgorithm.ComputeHash(pwdWithSalt);
-            }
+            return Hash(Encoding.UTF8.GetBytes(userPassword), salt);
         }
 
-        public static byte[] Hash(string value, byte[] salt)
+        public static byte[] Hash(byte[] userPassword, byte[] salt)
         {
-            salt = new byte[64];
-            //    using (var rng = new RNGCryptoServiceProvider())
-            //    {
-            //        rng.GetBytes(byteArr);
-            //    }
-            return Hash(Encoding.UTF8.GetBytes(value), salt);
-        }
-
-        public static byte[] Hash(byte[] value, byte[] salt)
-        {
-            var saltedValue = value.Concat(salt).ToArray();
-            // Alternatively use CopyTo.
-            //var saltedValue = new byte[value.Length + salt.Length];
-            //value.CopyTo(saltedValue, 0);
-            //salt.CopyTo(saltedValue, value.Length);
+            var saltedValue = userPassword.Concat(salt).ToArray();
 
             return new SHA256Managed().ComputeHash(saltedValue);
         }
 
-        public bool ConfirmPassword(string password)
+        public bool ConfirmPassword(string userName, string password)
         {
-            var passwordSalt = new byte[64];
+            //var userSalt = new byte[64];
+            var tempPass = new byte[64];
+            var tempSalt = new byte[64];
             using (var context = new DbConnection())
             {
                 context.Connection.Open();
                 context.SqlCommand.Connection = context.Connection;
 
-                context.SqlCommand.CommandText = "select salt from users where name='test'";
+                context.SqlCommand.CommandText = "select * from users where name = @userName";
+                context.SqlCommand.Parameters.AddWithValue("@username", userName);
                 var reader = context.SqlCommand.ExecuteReader();
                 while (reader.Read())
                 {
-                    passwordSalt = reader["salt"] as byte[];
+                    tempPass = reader["password"] as byte[];
+                    tempSalt = reader["salt"] as byte[];
                 }
             }
-            var passwordHash = Hash(password, passwordSalt);
+            var passwordHash = Hash(password, tempSalt);
 
-            return passwordHash.SequenceEqual(passwordHash);
+            return passwordHash.SequenceEqual(tempPass);
         }
 
     }

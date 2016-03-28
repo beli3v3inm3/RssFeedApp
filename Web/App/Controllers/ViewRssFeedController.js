@@ -4,9 +4,7 @@ app.controller('ViewRssFeedController', ['$scope', 'RssFeedService', function ($
     $scope.feed = [];
     $scope.currentItem = false;
 
-
     rssFeedService.getFeed().then(function (results) {
-
         $scope.feed = results.data;
 
     }, function (error) {
@@ -28,8 +26,8 @@ app.controller('ViewRssFeedController', ['$scope', 'RssFeedService', function ($
     };
 
     $scope.feed.forEach(function(checkItem) {
-        if (COND) {
-            
+        if (checkItem.isRead === false) {
+            //
         }
     });
 }]);
