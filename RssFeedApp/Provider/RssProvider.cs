@@ -41,13 +41,14 @@ namespace RssFeedApp.Provider
 
                 connection.Connection.Open();
                 connection.SqlCommand.Connection = connection.Connection;
-                connection.SqlCommand.CommandText = "insert into feed(url) values(@url)";
+                connection.SqlCommand.CommandText = "insert into feed(Url) values(@url)";
                 connection.SqlCommand.Parameters.AddWithValue("@url", urlFeed.Url);
                 connection.SqlCommand.ExecuteNonQuery();
                 connection.SqlCommand.Parameters.Clear();
 
                 connection.SqlCommand.CommandText = "spAddFeedItems";
                 connection.SqlCommand.CommandType = CommandType.StoredProcedure;
+                
                 if (feed == null) return;
                 foreach (var item in feed.Items)
                 {
@@ -55,6 +56,8 @@ namespace RssFeedApp.Provider
                     connection.SqlCommand.Parameters.AddWithValue("@title", item.Title.Text);
                     connection.SqlCommand.Parameters.AddWithValue("@body", item.Summary.Text);
                     connection.SqlCommand.Parameters.AddWithValue("@link", item.Id);
+                    connection.SqlCommand.Parameters.AddWithValue("@pubDate", item.PublishDate);
+                    connection.SqlCommand.Parameters.AddWithValue("@imageUrl", feed.ImageUrl);
                     connection.SqlCommand.Parameters.AddWithValue("@userName", user);
                     connection.SqlCommand.Parameters.AddWithValue("@isRead", false);
                     connection.SqlCommand.ExecuteNonQuery();
@@ -63,7 +66,6 @@ namespace RssFeedApp.Provider
             }
         }
 
-        //fix
         public IEnumerable<RssFeed> GetRssFeed(RssFeed rssFeed)
         {
             using (var connection = new DbConnection())
@@ -79,9 +81,12 @@ namespace RssFeedApp.Provider
                 var reader = connection.SqlCommand.ExecuteReader();
                 while (reader.Read())
                 {
+                    rssFeed.Id = (int) reader["id"];
                     rssFeed.Title = reader["title"].ToString();
                     rssFeed.Body = reader["body"].ToString();
                     rssFeed.Link = reader["link"].ToString();
+                    rssFeed.Image = reader["imageUrl"].ToString();
+                    rssFeed.PubDate = (DateTime) reader["pubDate"];
                     rssFeed.IsRead = (bool) reader["isread"];
                     yield return rssFeed;
                 }

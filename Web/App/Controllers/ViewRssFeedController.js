@@ -1,33 +1,56 @@
 ﻿'use strict';
-app.controller('ViewRssFeedController', ['$scope', 'RssFeedService', function ($scope, rssFeedService) {
+app.controller('ViewRssFeedController', ['$scope', '$location', 'RssFeedService', function ($scope, $location, rssFeedService) {
 
     $scope.feed = [];
     $scope.currentItem = false;
+    $scope.showItem = {};
+    $scope.SetItemVisible = function (index) {
+        if (!$scope.showItem[index]) {
+            $scope.showItem[index] = true;
+        } else {
+            $scope.showItem[index] = false;
+        }
+    }
+    getRssItems();
+    //rssFeedService.getFeed().then(function (results) {
+    //    $scope.feed = results.data;
 
-    rssFeedService.getFeed().then(function (results) {
-        $scope.feed = results.data;
+    //    //$scope.feed.forEach(function (checkitem){
+    //    //    if (!checkitem.isRead) {
+    //    //        $scope.unRead = {
+    //    //            "color": "white",
+    //    //            "background-color": "coral"
+    //    //        }
+    //    //    } else {
+    //    //        $scope.read = {
+    //    //            "color": "white",
+    //    //            "background-color": "green"
+    //    //        }
+    //    //    }
+    //    //});
 
-    }, function (error) {
-        //alert(error.data.message);
-    });
+    //}, function (error) {
+    //    //alert(error.data.message);
+    //});
 
     $scope.isReadClick = function (feedId) {
         $scope.rssData = {
-            id: feedId,
-            url: "",
-            title: "",
-            body: ""
+            id: feedId
         };
-        
-        rssFeedService.setReadItem(rssData).success(function () {
-            
+
+        rssFeedService.setReadItem($scope.rssData).success(function () {
+            getRssItems();
         });
 
     };
 
-    $scope.feed.forEach(function(checkItem) {
-        if (checkItem.isRead === false) {
-            //
-        }
-    });
+    function getRssItems() {
+        rssFeedService.getFeed().then(function (results) {
+            $scope.feed = results.data;
+
+        }, function (error) {
+            //alert(error.data.message);
+        });
+    }
+
 }]);

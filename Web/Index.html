@@ -20,29 +20,27 @@
             <div class="collapse navbar-collapse" data-collapse="!navbarExpanded">
                 <ul class="nav navbar-nav navbar-right">
                     <li ng-hide="!authentication.isAuth"><a href="#">Welcome {{authentication.userName}}</a></li>
+                    <li ng-hide="authentication.isAuth"> <a href="#/login">Login</a></li>
+                    <li ng-hide="authentication.isAuth"> <a href="#/signup">Sign Up</a></li>
+                    <li ng-hide="!authentication.isAuth"><a href="" ng-click="logOut()">Logout</a></li>
+                </ul>
+            </div>
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul ng-hide="!authentication.isAuth" class="nav navbar-nav side-nav">
+
                     <li ng-hide="!authentication.isAuth"><a href="#/feed">RSS Feed</a></li>
                     <li ng-hide="!authentication.isAuth"><a href="#/viewfeed">View all RSS</a></li>
                     <li ng-hide="!authentication.isAuth"><a href="#/refresh">Refresh Token</a></li>
-                    <li ng-hide="!authentication.isAuth"><a href="" ng-click="logOut()">Logout</a></li>
-                    <li ng-hide="authentication.isAuth"> <a href="#/login">Login</a></li>
-                    <li ng-hide="authentication.isAuth"> <a href="#/signup">Sign Up</a></li>
                 </ul>
             </div>
         </div>
-    </div>
-    <div class="jumbotron">
-        <div class="container">
-            <div class="page-header text-center">
-                <h1>AngularJS Authentication</h1>
-            </div>
-            <p>This single page application is built using AngularJS, it is using OAuth bearer token authentication, ASP.NET Web API 2, OWIN middleware, and ASP.NET Identity to generate tokens and register users.</p>
-        </div>
+
     </div>
     <div class="container">
         <div ng-view="">
         </div>
     </div>
-    <hr />
+    
     <div id="footer">
         <div class="container">
             <div class="row">

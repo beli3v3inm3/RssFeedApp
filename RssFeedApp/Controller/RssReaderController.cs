@@ -35,6 +35,19 @@ namespace RssFeedApp.Controller
             return Ok(_rssProvider.GetRssFeed(rssFeed));
         }
 
+        //[Authorize]
+        //public IHttpActionResult GetRssUrl()
+        //{
+            
+        //}
+       
+        [Route("SetRead")]
+        public IHttpActionResult SetReadFeeditem(RssFeed rssFeed)
+        {
+            _rssProvider.SetReadItem(rssFeed);
+            return Ok();
+        }
+
         [Authorize]
         public IHttpActionResult AddFeedByItem(RssFeed rssFeed)
         {

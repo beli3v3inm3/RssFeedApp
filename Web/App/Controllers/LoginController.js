@@ -13,7 +13,7 @@ app.controller('LoginController', ['$scope', '$location', 'AuthService', 'ngAuth
 
         authService.login($scope.loginData).then(function (response) {
 
-            $location.path('/home');
+            $location.path('/viewfeed');
 
         },
          function (err) {

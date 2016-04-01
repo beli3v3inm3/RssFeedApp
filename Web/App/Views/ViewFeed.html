@@ -1,13 +1,11 @@
 ﻿
-<div class="row">
-
-    <div class="col-md-12" ng-repeat="q in feed">
-
-        <a href="{{q.link}}">
-            <h1> {{q.title}}</h1>
-        </a>
-
-        <h4>{{q.body}}</h4>
-
-    </div>
+<div class="list-group" ng-click="SetItemVisible($index)" ng-repeat="q in feed track by $index">
+    <a href="" class="list-group-item">
+        <h4 ng-model="showItem[$index]" ng-click="isReadClick(q.id)" class="list-group-item-heading">
+            <span ng-class="q.isRead ? 'readedItem' : 'unreadItem'">
+                {{q.title}}
+            </span>
+        </h4>
+        <p ng-show="showItem[$index]" value="true" class="list-group-item-text">{{q.body}}</p>
+    </a>
 </div>

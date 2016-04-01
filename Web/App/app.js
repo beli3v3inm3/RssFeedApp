@@ -46,7 +46,7 @@ app.config(function ($routeProvider) {
         controller: "ViewRssFeedController",
         templateUrl: "/App/Views/ViewFeed.html"
     });
-    $routeProvider.otherwise({ redirectTo: "/home" });
+    $routeProvider.otherwise({ redirectTo: "/viewfeed" });
 });
 
 var serviceBase = 'http://localhost:63611/';
