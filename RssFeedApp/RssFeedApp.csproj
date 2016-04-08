@@ -216,6 +216,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controller\RssReaderController.cs" />
     <Compile Include="Entities\RefreshToken.cs" />
+    <Compile Include="Models\IRequestRepository.cs" />
+    <Compile Include="Models\IRssRepository.cs" />
     <Compile Include="Models\RssFeed.cs" />
     <Compile Include="Models\IUserRepository.cs" />
     <Compile Include="Models\UrlFeed.cs" />
@@ -224,8 +226,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Provider\RssProvider.cs" />
-    <Compile Include="Provider\UserProvider.cs" />
+    <Compile Include="Provider\HashPasswordProvider.cs" />
+    <Compile Include="Provider\RssRepository.cs" />
+    <Compile Include="Provider\UserRepository.cs" />
+    <Compile Include="Repository\RequestRepository.cs" />
     <Compile Include="Result\ChallengeResult.cs" />
     <Compile Include="Controller\AccountController.cs" />
     <Compile Include="Entities\Client.cs" />

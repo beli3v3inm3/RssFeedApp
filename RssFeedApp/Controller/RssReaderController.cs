@@ -7,11 +7,11 @@ namespace RssFeedApp.Controller
     [RoutePrefix("api/rssreader")]
     public class RssReaderController : ApiController
     {
-        private readonly RssProvider _rssProvider;
+        private readonly RssRepository _rssRepository;
        
         public RssReaderController()
         {
-            _rssProvider = RssProvider.GetInstance;
+            _rssRepository = new RssRepository();
         }
 
         [Authorize]
@@ -23,7 +23,7 @@ namespace RssFeedApp.Controller
                 return BadRequest(ModelState);
             }
 
-            _rssProvider.AddFeed(urlFeed);
+            _rssRepository.AddFeed(urlFeed);
             
             return Ok();
         }
@@ -32,32 +32,21 @@ namespace RssFeedApp.Controller
         public IHttpActionResult Get()
         {
             var rssFeed = new RssFeed();
-            return Ok(_rssProvider.GetRssFeed(rssFeed));
-        }
-
-        //[Authorize]
-        //public IHttpActionResult GetRssUrl()
-        //{
-            
-        //}
-       
-        [Route("SetRead")]
-        public IHttpActionResult SetReadFeeditem(RssFeed rssFeed)
-        {
-            _rssProvider.SetReadItem(rssFeed);
-            return Ok();
+            return Ok(_rssRepository.GetRssFeed(rssFeed));
         }
 
         [Authorize]
-        public IHttpActionResult AddFeedByItem(RssFeed rssFeed)
+        [Route("GetRss")]
+        public IHttpActionResult GetRssUrl()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            var rssFeed = new RssFeed();
+            return Ok(_rssRepository.GetRss(rssFeed));
+        }
 
-            _rssProvider.AddFeedByItem(rssFeed);
-
+        [Route("SetRead")]
+        public IHttpActionResult SetReadFeeditem(RssFeed rssFeed)
+        {
+            _rssRepository.SetReadItem(rssFeed);
             return Ok();
         }
     }

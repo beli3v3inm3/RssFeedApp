@@ -7,7 +7,7 @@ namespace RssFeedApp.Provider
 {
     public class SimpleRefreshTokenProvider : IAuthenticationTokenProvider
     {
-        private readonly UserProvider _repository = UserProvider.GetInstance;
+        private readonly UserRepository _repository = UserRepository.GetInstance;
 
         public async Task CreateAsync(AuthenticationTokenCreateContext context)
         {

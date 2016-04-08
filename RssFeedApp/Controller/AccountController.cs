@@ -8,11 +8,11 @@ namespace RssFeedApp.Controller
     [RoutePrefix("api/account")]
     public class AccountController : ApiController
     {
-        private readonly UserProvider _repository;
+        private readonly UserRepository _repository;
 
         public AccountController()
         {
-            _repository = UserProvider.GetInstance;
+            _repository = UserRepository.GetInstance;
         }
 
         [AllowAnonymous]

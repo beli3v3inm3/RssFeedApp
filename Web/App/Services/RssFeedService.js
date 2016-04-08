@@ -16,6 +16,13 @@ app.factory('RssFeedService', ['$http', 'ngAuthSettings', function ($http, ngAut
         });
     };
 
+    var _getRss = function () {
+
+        return $http.get(serviceBase + 'api/rssreader/getrss').then(function (results) {
+            return results;
+        });
+    };
+
     var _setReadItem = function(rssData) {
 
         return $http.post(serviceBase + 'api/rssreader/setread', rssData);
@@ -23,6 +30,7 @@ app.factory('RssFeedService', ['$http', 'ngAuthSettings', function ($http, ngAut
 
     FeedServiceFactory.submitUrl = _submitUrl;
     FeedServiceFactory.getFeed = _getFeed;
+    FeedServiceFactory.getRss = _getRss;
     FeedServiceFactory.setReadItem = _setReadItem;
 
     return FeedServiceFactory;

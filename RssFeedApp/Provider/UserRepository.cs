@@ -1,23 +1,20 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Configuration;
-using System.Web.Security;
 using RssFeedApp.Entities;
 using RssFeedApp.Models;
 
 namespace RssFeedApp.Provider
 {
-    public class UserProvider : IUserRepository
+    public class UserRepository : IUserRepository
     {
-        private static volatile UserProvider _instance;
+        private static volatile UserRepository _instance;
         private static readonly object SyncRoot = new object();
 
-        private UserProvider() { }
+        private UserRepository() { }
 
-        public static UserProvider GetInstance
+        public static UserRepository GetInstance
         {
             get
             {
@@ -25,7 +22,7 @@ namespace RssFeedApp.Provider
                 lock (SyncRoot)
                 {
                     if (_instance == null)
-                        _instance = new UserProvider();
+                        _instance = new UserRepository();
                 }
 
                 return _instance;
