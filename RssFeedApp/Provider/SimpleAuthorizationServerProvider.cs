@@ -73,19 +73,19 @@ namespace RssFeedApp.Provider
             return Task.FromResult<object>(null);
         }
 
-        public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
+        public override Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
 
             var allowedOrigin = context.OwinContext.Get<string>("as:clientAllowedOrigin") ?? "*";
 
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { allowedOrigin });
 
-            var user = await _repository.FindUserTask(context.UserName, context.Password);
+            var user = _repository.FindUser(context.UserName, context.Password);
 
             if (user == null)
             {
                 context.SetError("invalid_grant", "The user name or password is incorrect.");
-                return;
+                return Task.FromResult<object>(null);
             }
 
 
@@ -106,7 +106,7 @@ namespace RssFeedApp.Provider
 
             var ticket = new AuthenticationTicket(identity, props);
             context.Validated(ticket);
-
+            return Task.FromResult<object>(null);
         }
 
         public override Task GrantRefreshToken(OAuthGrantRefreshTokenContext context)

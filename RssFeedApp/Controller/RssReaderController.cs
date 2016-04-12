@@ -11,19 +11,19 @@ namespace RssFeedApp.Controller
        
         public RssReaderController()
         {
-            _rssRepository = new RssRepository();
+            _rssRepository = RssRepository.GetInstance;
         }
 
         [Authorize]
         [Route("AddFeed")]
-        public IHttpActionResult AddFeedByUrl(UrlFeed urlFeed)
+        public IHttpActionResult AddFeedByUrl(Rss urlRss)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _rssRepository.AddFeed(urlFeed);
+            _rssRepository.AddFeed(urlRss);
             
             return Ok();
         }
@@ -31,22 +31,22 @@ namespace RssFeedApp.Controller
         [Authorize]
         public IHttpActionResult Get()
         {
-            var rssFeed = new RssFeed();
-            return Ok(_rssRepository.GetRssFeed(rssFeed));
+            var feed = new Feed();
+            return Ok(_rssRepository.GetFeeds(feed));
         }
 
         [Authorize]
         [Route("GetRss")]
         public IHttpActionResult GetRssUrl()
         {
-            var rssFeed = new RssFeed();
-            return Ok(_rssRepository.GetRss(rssFeed));
+            var rss = new Rss();
+            return Ok(_rssRepository.GetRss(rss));
         }
 
         [Route("SetRead")]
-        public IHttpActionResult SetReadFeeditem(RssFeed rssFeed)
+        public IHttpActionResult SetReadFeeditem(Feed feed)
         {
-            _rssRepository.SetReadItem(rssFeed);
+            _rssRepository.SetReadItem(feed);
             return Ok();
         }
     }

@@ -218,9 +218,9 @@
     <Compile Include="Entities\RefreshToken.cs" />
     <Compile Include="Models\IRequestRepository.cs" />
     <Compile Include="Models\IRssRepository.cs" />
-    <Compile Include="Models\RssFeed.cs" />
+    <Compile Include="Models\Feed.cs" />
     <Compile Include="Models\IUserRepository.cs" />
-    <Compile Include="Models\UrlFeed.cs" />
+    <Compile Include="Models\Rss.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

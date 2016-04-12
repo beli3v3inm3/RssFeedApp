@@ -1,14 +1,17 @@
-﻿using System.Linq;
+﻿using System.Data.SqlClient;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using RssFeedApp.Entities;
 using RssFeedApp.Models;
+using RssFeedApp.Repository;
 
 namespace RssFeedApp.Provider
 {
     public class UserRepository : IUserRepository
     {
+        #region singleton
         private static volatile UserRepository _instance;
         private static readonly object SyncRoot = new object();
 
@@ -28,9 +31,11 @@ namespace RssFeedApp.Provider
                 return _instance;
             }
         }
+        #endregion
 
         public UserModel RegisterTask(UserModel userModel)
         {
+            const string addUserQuery = "insert into users(name, password, salt) values(@name, @password, @salt)";;
             var salt = CreateSalt();
             var hashedPassword = Hash(userModel.Password, salt);
             var user = new UserModel
@@ -39,64 +44,36 @@ namespace RssFeedApp.Provider
                 HashedPassword = hashedPassword,
                 Salt = salt
             };
-            using (var context = new DbConnection())
+
+            using (var repo = new RequestRepository())
             {
-                context.Connection.Open();
-                context.SqlCommand.Connection = context.Connection;
-
-                context.SqlCommand.CommandText = "insert into users(name, password, salt) values(@name, @password, @salt)";
-
-                context.SqlCommand.Parameters.AddWithValue("@name", user.UserName);
-                context.SqlCommand.Parameters.AddWithValue("@password", hashedPassword);
-                context.SqlCommand.Parameters.AddWithValue("@salt", user.Salt);
-
-                context.SqlCommand.ExecuteNonQuery();
+                repo.ExecuteQuery(
+                    addUserQuery,
+                    new SqlParameter("@name", user.UserName),
+                    new SqlParameter("@password", hashedPassword),
+                    new SqlParameter("@salt", user.Salt));
             }
 
             return user;
         }
 
 
-        public async Task<string> FindUserTask(string userName, string password)
+        public string FindUser(string userName, string password)
         {
-            string user = null;
             var correctCredentials = ConfirmPassword(userName, password);
-            if (correctCredentials == false)
-            {
-                return null;
-            }
-            using (var context = new DbConnection())
-            {
-                context.Connection.Open();
-                context.SqlCommand.Connection = context.Connection;
-
-                context.SqlCommand.CommandText = "select * from users where name = @username";
-                context.SqlCommand.Parameters.AddWithValue("@username", userName);
-
-                var reader = await context.SqlCommand.ExecuteReaderAsync();
-                while (reader.Read())
-                {
-                    user = reader["name"].ToString();
-                }
-            }
-            return user;
+            return !correctCredentials ? null : userName;
         }
 
         public Client FindClient(string clientId)
         {
             Client user = null;
-            using (var context = new DbConnection())
+            const string findClientQuery = "select id from client where id = @clientId";
+            using (var repo = new RequestRepository())
             {
-                context.Connection.Open();
-                context.SqlCommand.Connection = context.Connection;
 
-                context.SqlCommand.CommandText = "select * from client where id = @clientId";
-                context.SqlCommand.Parameters.AddWithValue("@clientId", clientId);
-
-                var reader = context.SqlCommand.ExecuteReader();
-                while (reader.Read())
+                foreach (object[] items in repo.ExecuteQueryReader(findClientQuery, new SqlParameter("@clientId", clientId)))
                 {
-                    user = (Client)reader["id"];
+                    user = (Client) items[0];
                 }
             }
             return user;
@@ -104,25 +81,21 @@ namespace RssFeedApp.Provider
 
         public UserModel GetUserId(string userName)
         {
+            const string getUserIdQuery = "select id from users where name = @userName";
             UserModel user = null;
-            using (var context = new DbConnection())
+
+            using (var repo = new RequestRepository())
             {
-                context.Connection.Open();
-
-                context.SqlCommand.CommandText = "select id from users where name = @userName";
-
-                context.SqlCommand.Parameters.AddWithValue("@userName", userName);
-
-                var reader = context.SqlCommand.ExecuteReader();
-                while (reader.Read())
+                foreach (object[] items in repo.ExecuteQueryReader(getUserIdQuery, new SqlParameter("@userName", userName)))
                 {
-                    user = reader["id"] as UserModel;
+                    user = items[0] as UserModel;
                 }
             }
 
             return user;
         }
 
+        //fix
         public async Task<RefreshToken> AddRefreshToken(RefreshToken token)
         {
             RefreshToken existingToken = null;
@@ -160,6 +133,7 @@ namespace RssFeedApp.Provider
             return existingToken;
         }
 
+        //fix
         public async Task RemoveRefreshToken(string refreshTokenId)
         {
             using (var context = new DbConnection())
@@ -173,6 +147,7 @@ namespace RssFeedApp.Provider
             }
         }
 
+        //fix
         public void RemoveRefreshToken(RefreshToken refreshToken)
         {
             using (var context = new DbConnection())
@@ -186,6 +161,7 @@ namespace RssFeedApp.Provider
             }
         }
 
+        //fix
         public RefreshToken FindRefreshToken(string refreshTokenId)
         {
             RefreshToken refreshToken = null;
@@ -231,20 +207,16 @@ namespace RssFeedApp.Provider
         public bool ConfirmPassword(string userName, string password)
         {
             //var userSalt = new byte[64];
+            const string getHashQuery = "select * from users where name = @userName";
             var tempPass = new byte[64];
             var tempSalt = new byte[64];
-            using (var context = new DbConnection())
-            {
-                context.Connection.Open();
-                context.SqlCommand.Connection = context.Connection;
 
-                context.SqlCommand.CommandText = "select * from users where name = @userName";
-                context.SqlCommand.Parameters.AddWithValue("@username", userName);
-                var reader = context.SqlCommand.ExecuteReader();
-                while (reader.Read())
+            using (var repo = new RequestRepository())
+            {
+                foreach (object[] items in repo.ExecuteQueryReader(getHashQuery, new SqlParameter("@username", userName)))
                 {
-                    tempPass = reader["password"] as byte[];
-                    tempSalt = reader["salt"] as byte[];
+                    tempPass = items[2] as byte[];
+                    tempSalt = items[3] as byte[];
                 }
             }
             var passwordHash = Hash(password, tempSalt);

@@ -2,7 +2,7 @@
 
 namespace RssFeedApp.Models
 {
-    public class RssFeed
+    public class Feed
     {
         public int Id { get; set; }
         public string Title { get; set; }

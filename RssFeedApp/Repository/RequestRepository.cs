@@ -30,8 +30,19 @@ namespace RssFeedApp.Repository
             }
         }
 
-        //fx
-        public IEnumerable<RssFeed> ExecuteReader(string query, RssFeed rssFeed, params SqlParameter[] parameters)
+        public void ExecuteQuery(string query, params SqlParameter[] parameters)
+        {
+            using (var cmd = new SqlCommand(query, _connection))
+            {
+                if (parameters == null) return;
+
+                cmd.CommandText = query;
+                cmd.Parameters.AddRange(parameters);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public IEnumerable<object> ExecuteProcReader(string query, params SqlParameter[] parameters)
         {
             using (var cmd = new SqlCommand(query, _connection))
             {
@@ -41,12 +52,30 @@ namespace RssFeedApp.Repository
                 {
                     while (reader.Read())
                     {
-
-                        yield return rssFeed;
+                        var values = new object[reader.FieldCount];
+                        reader.GetValues(values);
+                        yield return values;    
                     }
                 }
-            } 
-            yield return null;
+            }
+        }
+
+        public IEnumerable<object> ExecuteQueryReader(string query, params SqlParameter[] parameters)
+        {
+            using (var cmd = new SqlCommand(query, _connection))
+            {
+                cmd.CommandText = query;
+                cmd.Parameters.AddRange(parameters);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var values = new object[reader.FieldCount];
+                        reader.GetValues(values);
+                        yield return values;
+                    }
+                }
+            }
         }
 
         public void Dispose()

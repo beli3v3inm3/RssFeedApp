@@ -7,10 +7,10 @@ namespace RssFeedApp.Models
 {
     public interface IRssRepository
     {
-        void AddFeed(UrlFeed urlFeed);
-        IEnumerable<RssFeed> GetRssFeed(RssFeed rssFeed);
-        IEnumerable<RssFeed> GetRss(RssFeed rssFeed);
-        void RemoveFeed(RssFeed rssFeed);
-        void SetReadItem(RssFeed rssFeed);
+        void AddFeed(Rss urlRss);
+        IEnumerable<Feed> GetFeeds(Feed feed);
+        IEnumerable<Rss> GetRss(Rss rss);
+        void RemoveFeed(Feed feed);
+        void SetReadItem(Feed feed);
     }
 }

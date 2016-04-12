@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.ServiceModel.Syndication;
 using System.Web;
@@ -10,40 +9,41 @@ using RssFeedApp.Repository;
 
 namespace RssFeedApp.Provider
 {
-    public class RssRepository : IRssRepository
+    public class RssRepository : IRssRepository, IDisposable
     {
+
         #region Singleton
-        //private static volatile RssRepository _instance;
-        //private static readonly object SyncRoot = new object();
+        private static volatile RssRepository _instance;
+        private static readonly object SyncRoot = new object();
 
-        //private RssRepository() { }
+        private RssRepository() { }
 
-        //public static RssRepository GetInstance
-        //{
-        //    get
-        //    {
-        //        if (_instance == null)
-        //        {
-        //            lock (SyncRoot)
-        //            {
-        //                if (_instance == null)
-        //                    _instance = new RssRepository();
-        //            }
-        //        }
+        public static RssRepository GetInstance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (SyncRoot)
+                    {
+                        if (_instance == null)
+                            _instance = new RssRepository();
+                    }
+                }
 
-        //        return _instance;
-        //    }
-        //}
+                return _instance;
+            }
+        }
         #endregion
 
-        public void AddFeed(UrlFeed urlFeed)
+        public void AddFeed(Rss urlRss)
         {
             const string addFeedProc = "spAddFeed";
             const string addFeedItemProc = "spAddFeedItems";
 
             using (var repo = new RequestRepository())
             {
-                var reader = new XmlTextReader(urlFeed.Url);
+                var reader = new XmlTextReader(urlRss.Url);
                 var syndicationFeed = SyndicationFeed.Load(reader);
                 var user = HttpContext.Current.User.Identity.Name;
 
@@ -51,7 +51,7 @@ namespace RssFeedApp.Provider
 
                 repo.ExecuteProcedure(
                     addFeedProc,
-                    new SqlParameter("@url", urlFeed.Url),
+                    new SqlParameter("@url", urlRss.Url),
                     new SqlParameter("@title", syndicationFeed.Title.Text),
                     new SqlParameter("@description", syndicationFeed.Description.Text),
                     new SqlParameter("@imageUrl", syndicationFeed.ImageUrl.AbsoluteUri),
@@ -63,7 +63,7 @@ namespace RssFeedApp.Provider
                 {
                     repo.ExecuteProcedure(
                         addFeedItemProc,
-                        new SqlParameter("@url", urlFeed.Url),
+                        new SqlParameter("@url", urlRss.Url),
                         new SqlParameter("@title", item.Title.Text),
                         new SqlParameter("@body", item.Summary.Text),
                         new SqlParameter("@link", item.Id),
@@ -71,7 +71,7 @@ namespace RssFeedApp.Provider
                         new SqlParameter("@userName", user),
                         new SqlParameter("@isRead", false));
                 }
-
+                #region old
                 //if (feed == null) return;
                 //connection.Connection.Open();
                 //connection.SqlCommand.Connection = connection.Connection;
@@ -104,94 +104,161 @@ namespace RssFeedApp.Provider
                 //    connection.SqlCommand.ExecuteNonQuery();
                 //    connection.SqlCommand.Parameters.Clear();
                 //}
+                #endregion
             }
         }
 
-        public IEnumerable<RssFeed> GetRssFeed(RssFeed rssFeed)
+        public IEnumerable<Feed> GetFeeds(Feed feed)
         {
-            using (var connection = new DbConnection())
+            const string getFeedsProc = "spGetItemsByUser";
+
+            using (var repo = new RequestRepository())
             {
                 var user = HttpContext.Current.User.Identity.Name;
 
-                connection.Connection.Open();
-                connection.SqlCommand.Connection = connection.Connection;
-
-                connection.SqlCommand.CommandText = "spGetItemsByUser";
-                connection.SqlCommand.CommandType = CommandType.StoredProcedure;
-                connection.SqlCommand.Parameters.AddWithValue("@userName", user);
-                var reader = connection.SqlCommand.ExecuteReader();
-                while (reader.Read())
+                foreach (object[] items in repo.ExecuteProcReader(
+                    getFeedsProc,
+                    new SqlParameter("@userName", user)))
                 {
-                    rssFeed.Id = (int)reader["id"];
-                    rssFeed.Title = reader["title"].ToString();
-                    rssFeed.Body = reader["body"].ToString();
-                    rssFeed.Link = reader["link"].ToString();
-                    var pubDate = reader["pubDate"].ToString();
-                    if (!string.IsNullOrEmpty(pubDate))
+                    feed.Id = (int)items[0];
+                    feed.Title = items[1].ToString();
+                    feed.Body = items[2].ToString();
+                    feed.Link = items[3].ToString();
+                    if (items[4] is DateTime)
                     {
-                        rssFeed.PubDate = Convert.ToDateTime(pubDate);
+                        feed.PubDate = (DateTime)items[4];
                     }
-                    rssFeed.IsRead = (bool)reader["isread"];
-                    yield return rssFeed;
+                    feed.IsRead = (bool)items[5];
+                    yield return feed;
                 }
             }
+
+            #region old
+            //using (var connection = new DbConnection())
+            //{
+            //    var user = HttpContext.Current.User.Identity.Name;
+
+            //    connection.Connection.Open();
+            //    connection.SqlCommand.Connection = connection.Connection;
+
+            //    connection.SqlCommand.CommandText = "spGetItemsByUser";
+            //    connection.SqlCommand.CommandType = CommandType.StoredProcedure;
+            //    connection.SqlCommand.Parameters.AddWithValue("@userName", user);
+            //    var reader = connection.SqlCommand.ExecuteReader();
+            //    while (reader.Read())
+            //    {
+            //        //rssFeed.Id = (int)reader["id"];
+            //        //rssFeed.Title = reader["title"].ToString();
+            //        //rssFeed.Body = reader["body"].ToString();
+            //        //rssFeed.Link = reader["link"].ToString();
+            //        //var pubDate = reader["pubDate"].ToString();
+            //        //if (!string.IsNullOrEmpty(pubDate))
+            //        //{
+            //        //    rssFeed.PubDate = Convert.ToDateTime(pubDate);
+            //        //}
+            //        //rssFeed.IsRead = (bool)reader["isread"];
+            //        yield return reader;
+            //    }
+            //}
+            #endregion
         }
 
-        public IEnumerable<RssFeed> GetRss(RssFeed rssFeed)
+        public IEnumerable<Rss> GetRss(Rss rss)
         {
-            using (var connection = new DbConnection())
+            const string getRssProc = "GetRssByUser";
+
+            var user = HttpContext.Current.User.Identity.Name;
+            using (var repo = new RequestRepository())
+            {
+
+                foreach (object[] items in repo.ExecuteProcReader(
+                    getRssProc,
+                    new SqlParameter("@userName", user)))
+                {
+                    rss.Id = (int) items[0];
+                    rss.Title = items[2].ToString();
+                    rss.Description = items[3].ToString();
+                    rss.ImageUrl = items[4].ToString();
+                    rss.PubDate = (DateTime) items[5];
+                    yield return rss;
+                }
+            }
+
+            #region old
+            //using (var connection = new DbConnection())
+            //{
+            //    var user = HttpContext.Current.User.Identity.Name;
+
+            //    connection.Connection.Open();
+            //    connection.SqlCommand.Connection = connection.Connection;
+
+            //    connection.SqlCommand.CommandText = "GetRssByUser";
+            //    connection.SqlCommand.CommandType = CommandType.StoredProcedure;
+            //    connection.SqlCommand.Parameters.AddWithValue("@userName", user);
+
+            //    var reader = connection.SqlCommand.ExecuteReader();
+            //    while (reader.Read())
+            //    {
+            //        feed.Id = (int)reader["id"];
+            //        feed.Title = reader["title"].ToString();
+            //        feed.Body = reader["body"].ToString(); 
+            //        feed.Link = reader["link"].ToString(); 
+            //        feed.Image = reader["imageUrl"].ToString();
+            //        feed.PubDate = (DateTime)reader["pubDate"];
+            //        feed.IsRead = (bool)reader["isread"];
+            //        yield return feed;
+            //    }
+            //    yield return feed;
+            //}
+            #endregion
+        }
+
+
+        public void RemoveFeed(Feed feed)
+        {
+            const string removeFeedItem = "spRemoveRssItem";
+
+            using (var repo = new RequestRepository())
             {
                 var user = HttpContext.Current.User.Identity.Name;
-
-                connection.Connection.Open();
-                connection.SqlCommand.Connection = connection.Connection;
-
-                connection.SqlCommand.CommandText = "GetRssByUser";
-                connection.SqlCommand.CommandType = CommandType.StoredProcedure;
-                connection.SqlCommand.Parameters.AddWithValue("@userName", user);
-
-                var reader = connection.SqlCommand.ExecuteReader();
-                while (reader.Read())
-                {
-                    rssFeed.Id = reader.GetInt32(0);
-                    rssFeed.FeedTitle = reader.GetString(1);
-                    rssFeed.FeedDescription = reader.GetString(2);
-                    rssFeed.Image = reader.GetString(3);
-                    rssFeed.FeedLastBuildDate = reader.GetDateTime(4);
-                    yield return rssFeed;
-                }
-                yield return rssFeed;
+                repo.ExecuteProcedure(
+                    removeFeedItem,
+                    new SqlParameter("@userName", user),
+                    new SqlParameter("@Id", feed.Id));
             }
         }
 
-        //fix
-        public void RemoveFeed(RssFeed rssFeed)
+        public void SetReadItem(Feed feed)
         {
-            using (var connection = new DbConnection())
-            {
-                connection.Connection.Open();
-                connection.SqlCommand.Connection = connection.Connection;
+            const string setReadItemProc = "spReadFeedItemEdit";
 
-                connection.SqlCommand.CommandText = "delete from feed where id = @id";
-                connection.SqlCommand.Parameters.AddWithValue("id", rssFeed.Id);
-                connection.SqlCommand.ExecuteNonQuery();
+            using (var repo = new RequestRepository())
+            {
+                repo.ExecuteProcedure(
+                    setReadItemProc,
+                    new SqlParameter("@feeId", feed.Id),
+                    new SqlParameter("@isRead", true));
             }
+
+            #region old
+            //using (var context = new DbConnection())
+            //{
+            //    context.Connection.Open();
+            //    context.SqlCommand.Connection = context.Connection;
+
+            //    context.SqlCommand.CommandText = "spReadFeedItemEdit";
+            //    context.SqlCommand.CommandType = CommandType.StoredProcedure;
+
+            //    context.SqlCommand.Parameters.AddWithValue("@feeId", feed.Id);
+            //    context.SqlCommand.Parameters.AddWithValue("@isRead", true);
+            //    context.SqlCommand.ExecuteNonQuery();
+            //}
+            #endregion
         }
 
-        public void SetReadItem(RssFeed rssFeed)
+        public void Dispose()
         {
-            using (var context = new DbConnection())
-            {
-                context.Connection.Open();
-                context.SqlCommand.Connection = context.Connection;
-
-                context.SqlCommand.CommandText = "spReadFeedItemEdit";
-                context.SqlCommand.CommandType = CommandType.StoredProcedure;
-
-                context.SqlCommand.Parameters.AddWithValue("@feeId", rssFeed.Id);
-                context.SqlCommand.Parameters.AddWithValue("@isRead", true);
-                context.SqlCommand.ExecuteNonQuery();
-            }
+            throw new NotImplementedException();
         }
     }
 }
