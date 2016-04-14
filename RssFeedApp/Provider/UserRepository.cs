@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -9,33 +10,18 @@ using RssFeedApp.Repository;
 
 namespace RssFeedApp.Provider
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : IUserRepository, IDisposable
     {
-        #region singleton
-        private static volatile UserRepository _instance;
-        private static readonly object SyncRoot = new object();
+        private readonly IRequestRepository _repository;
 
-        private UserRepository() { }
-
-        public static UserRepository GetInstance
+        public UserRepository(IRequestRepository repository)
         {
-            get
-            {
-                if (_instance != null) return _instance;
-                lock (SyncRoot)
-                {
-                    if (_instance == null)
-                        _instance = new UserRepository();
-                }
-
-                return _instance;
-            }
+            _repository = repository;
         }
-        #endregion
 
         public UserModel RegisterTask(UserModel userModel)
         {
-            const string addUserQuery = "insert into users(name, password, salt) values(@name, @password, @salt)";;
+            const string addUserQuery = "insert into users(name, password, salt) values(@name, @password, @salt)"; ;
             var salt = CreateSalt();
             var hashedPassword = Hash(userModel.Password, salt);
             var user = new UserModel
@@ -45,14 +31,12 @@ namespace RssFeedApp.Provider
                 Salt = salt
             };
 
-            using (var repo = new RequestRepository())
-            {
-                repo.ExecuteQuery(
+            _repository.ExecuteQuery(
                     addUserQuery,
                     new SqlParameter("@name", user.UserName),
                     new SqlParameter("@password", hashedPassword),
                     new SqlParameter("@salt", user.Salt));
-            }
+
 
             return user;
         }
@@ -68,14 +52,13 @@ namespace RssFeedApp.Provider
         {
             Client user = null;
             const string findClientQuery = "select id from client where id = @clientId";
-            using (var repo = new RequestRepository())
-            {
 
-                foreach (object[] items in repo.ExecuteQueryReader(findClientQuery, new SqlParameter("@clientId", clientId)))
-                {
-                    user = (Client) items[0];
-                }
+
+            foreach (var items in _repository.ExecuteQueryReader(findClientQuery, new SqlParameter("@clientId", clientId)))
+            {
+                user = (Client)items[0];
             }
+
             return user;
         }
 
@@ -84,18 +67,17 @@ namespace RssFeedApp.Provider
             const string getUserIdQuery = "select id from users where name = @userName";
             UserModel user = null;
 
-            using (var repo = new RequestRepository())
+
+            foreach (var items in _repository.ExecuteQueryReader(getUserIdQuery, new SqlParameter("@userName", userName)))
             {
-                foreach (object[] items in repo.ExecuteQueryReader(getUserIdQuery, new SqlParameter("@userName", userName)))
-                {
-                    user = items[0] as UserModel;
-                }
+                user = items[0] as UserModel;
             }
+
 
             return user;
         }
 
-        //fix
+        
         public async Task<RefreshToken> AddRefreshToken(RefreshToken token)
         {
             RefreshToken existingToken = null;
@@ -133,7 +115,7 @@ namespace RssFeedApp.Provider
             return existingToken;
         }
 
-        //fix
+        
         public async Task RemoveRefreshToken(string refreshTokenId)
         {
             using (var context = new DbConnection())
@@ -147,7 +129,7 @@ namespace RssFeedApp.Provider
             }
         }
 
-        //fix
+        
         public void RemoveRefreshToken(RefreshToken refreshToken)
         {
             using (var context = new DbConnection())
@@ -161,7 +143,7 @@ namespace RssFeedApp.Provider
             }
         }
 
-        //fix
+        
         public RefreshToken FindRefreshToken(string refreshTokenId)
         {
             RefreshToken refreshToken = null;
@@ -175,7 +157,7 @@ namespace RssFeedApp.Provider
                 var reader = context.SqlCommand.ExecuteReader();
                 while (reader.Read())
                 {
-                    refreshToken = (RefreshToken) reader["id"];
+                    refreshToken = (RefreshToken)reader["id"];
                 }
             }
             return refreshToken;
@@ -206,23 +188,24 @@ namespace RssFeedApp.Provider
 
         public bool ConfirmPassword(string userName, string password)
         {
-            //var userSalt = new byte[64];
             const string getHashQuery = "select * from users where name = @userName";
             var tempPass = new byte[64];
             var tempSalt = new byte[64];
 
-            using (var repo = new RequestRepository())
+            foreach (var items in _repository.ExecuteQueryReader(getHashQuery, new SqlParameter("@username", userName)))
             {
-                foreach (object[] items in repo.ExecuteQueryReader(getHashQuery, new SqlParameter("@username", userName)))
-                {
-                    tempPass = items[2] as byte[];
-                    tempSalt = items[3] as byte[];
-                }
+                tempPass = items[2] as byte[];
+                tempSalt = items[3] as byte[];
             }
+
             var passwordHash = Hash(password, tempSalt);
 
             return passwordHash.SequenceEqual(tempPass);
         }
 
+        public void Dispose()
+        {
+            _repository.Dispose();
+        }
     }
 }

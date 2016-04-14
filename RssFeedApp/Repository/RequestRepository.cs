@@ -11,6 +11,7 @@ namespace RssFeedApp.Repository
     {
         private static readonly string ConString = Settings.Default.RssConnectionString;
         private readonly SqlConnection _connection;
+        private bool _disposed;
 
         public RequestRepository()
         {
@@ -42,7 +43,7 @@ namespace RssFeedApp.Repository
             }
         }
 
-        public IEnumerable<object> ExecuteProcReader(string query, params SqlParameter[] parameters)
+        public IEnumerable<object[]> ExecuteProcReader(string query, params SqlParameter[] parameters)
         {
             using (var cmd = new SqlCommand(query, _connection))
             {
@@ -60,7 +61,7 @@ namespace RssFeedApp.Repository
             }
         }
 
-        public IEnumerable<object> ExecuteQueryReader(string query, params SqlParameter[] parameters)
+        public IEnumerable<object[]> ExecuteQueryReader(string query, params SqlParameter[] parameters)
         {
             using (var cmd = new SqlCommand(query, _connection))
             {
@@ -80,7 +81,24 @@ namespace RssFeedApp.Repository
 
         public void Dispose()
         {
-            _connection.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // Protected implementation of Dispose pattern.
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _connection?.Dispose();
+            }
+
+            // Free any unmanaged objects here.
+            //
+            _disposed = true;
         }
     }
 }

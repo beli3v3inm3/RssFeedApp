@@ -25,7 +25,7 @@ app.factory('RssFeedService', ['$http', 'ngAuthSettings', function ($http, ngAut
 
     var _setReadItem = function(rssData) {
 
-        return $http.post(serviceBase + 'api/rssreader/setread', rssData);
+        return $http.post(serviceBase + 'api/rssreader', rssData);
     };
 
     FeedServiceFactory.submitUrl = _submitUrl;

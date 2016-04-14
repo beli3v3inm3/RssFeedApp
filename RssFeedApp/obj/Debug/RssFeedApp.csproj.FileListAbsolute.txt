@@ -130,3 +130,8 @@ E:\RssFeedApp\RssFeedApp\bin\System.Web.Razor.xml
 E:\RssFeedApp\RssFeedApp\bin\System.Web.WebPages.xml
 E:\RssFeedApp\RssFeedApp\bin\System.Web.WebPages.Deployment.xml
 E:\RssFeedApp\RssFeedApp\bin\System.Web.WebPages.Razor.xml
+E:\RssFeedApp\RssFeedApp\bin\StructureMap.dll
+E:\RssFeedApp\RssFeedApp\bin\StructureMap.Net4.dll
+E:\RssFeedApp\RssFeedApp\bin\StructureMap.pdb
+E:\RssFeedApp\RssFeedApp\bin\StructureMap.xml
+E:\RssFeedApp\RssFeedApp\bin\StructureMap.Net4.pdb

@@ -2,12 +2,19 @@
 using System.Threading.Tasks;
 using Microsoft.Owin.Security.Infrastructure;
 using RssFeedApp.Entities;
+using RssFeedApp.Models;
 
 namespace RssFeedApp.Provider
 {
     public class SimpleRefreshTokenProvider : IAuthenticationTokenProvider
     {
-        private readonly UserRepository _repository = UserRepository.GetInstance;
+        
+        private readonly IUserRepository _repository;
+
+        public SimpleRefreshTokenProvider(IUserRepository repository)
+        {
+            _repository = repository;
+        }
 
         public async Task CreateAsync(AuthenticationTokenCreateContext context)
         {

@@ -1,20 +1,20 @@
 ﻿using System.Web.Http;
 using RssFeedApp.Models;
 using RssFeedApp.Provider;
+using StructureMap.Attributes;
 
 namespace RssFeedApp.Controller
 {
-    [RoutePrefix("api/rssreader")]
+    [Authorize]
     public class RssReaderController : ApiController
     {
-        private readonly RssRepository _rssRepository;
+        private readonly IRssRepository _rssRepository;
        
-        public RssReaderController()
+        public RssReaderController(IRssRepository rssRepository)
         {
-            _rssRepository = RssRepository.GetInstance;
+            _rssRepository = rssRepository;
         }
 
-        [Authorize]
         [Route("AddFeed")]
         public IHttpActionResult AddFeedByUrl(Rss urlRss)
         {
@@ -27,23 +27,11 @@ namespace RssFeedApp.Controller
             
             return Ok();
         }
+        public IHttpActionResult Get() => Ok(_rssRepository.GetFeeds());
 
-        [Authorize]
-        public IHttpActionResult Get()
-        {
-            var feed = new Feed();
-            return Ok(_rssRepository.GetFeeds(feed));
-        }
-
-        [Authorize]
         [Route("GetRss")]
-        public IHttpActionResult GetRssUrl()
-        {
-            var rss = new Rss();
-            return Ok(_rssRepository.GetRss(rss));
-        }
+        public IHttpActionResult GetRssUrl() => Ok(_rssRepository.GetRss());
 
-        [Route("SetRead")]
         public IHttpActionResult SetReadFeeditem(Feed feed)
         {
             _rssRepository.SetReadItem(feed);
