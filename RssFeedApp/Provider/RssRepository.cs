@@ -7,9 +7,10 @@ using System.Web;
 using System.Xml;
 using RssFeedApp.Models;
 using RssFeedApp.Repository;
+
 namespace RssFeedApp.Provider
 {
-    public class RssRepository : IRssRepository, IDisposable
+    public class RssRepository : IRssRepository
     {
         private readonly IRequestRepository _requestRepository;
 
@@ -18,13 +19,12 @@ namespace RssFeedApp.Provider
             _requestRepository = repository;
         }
 
-        public void AddFeed(Rss urlRss)
+        public void AddFeed(Rss rss)
         {
             const string addFeedProc = "spAddFeed";
             const string addFeedItemProc = "spAddFeedItems";
 
-
-            var reader = new XmlTextReader(urlRss.Url);
+            var reader = new XmlTextReader(rss.Url);
             var syndicationFeed = SyndicationFeed.Load(reader);
             var user = HttpContext.Current.User.Identity.Name;
 
@@ -32,11 +32,11 @@ namespace RssFeedApp.Provider
 
             _requestRepository.ExecuteProcedure(
                 addFeedProc,
-                new SqlParameter("@url", urlRss.Url),
+                new SqlParameter("@url", rss.Url),
                 new SqlParameter("@title", syndicationFeed.Title.Text),
                 new SqlParameter("@description", syndicationFeed.Description.Text),
-                new SqlParameter("@imageUrl", syndicationFeed.ImageUrl.AbsoluteUri),
-                new SqlParameter("@lastBuildDate", syndicationFeed.LastUpdatedTime.DateTime == DateTime.MinValue ? DateTime.Now : syndicationFeed.LastUpdatedTime.DateTime),
+                new SqlParameter("@imageUrl", syndicationFeed.ImageUrl?.AbsoluteUri),
+                new SqlParameter("@lastBuildDate", syndicationFeed.LastUpdatedTime.DateTime == DateTime.MinValue ? (DateTime?)null : syndicationFeed.LastUpdatedTime.DateTime),
                 new SqlParameter("@userName", user));
 
 
@@ -44,11 +44,11 @@ namespace RssFeedApp.Provider
             {
                 _requestRepository.ExecuteProcedure(
                     addFeedItemProc,
-                    new SqlParameter("@url", urlRss.Url),
+                    new SqlParameter("@url", rss.Url),
                     new SqlParameter("@title", item.Title.Text),
                     new SqlParameter("@body", item.Summary.Text),
-                    new SqlParameter("@link", item.Id),
-                    new SqlParameter("@pubDate", item.PublishDate.DateTime == DateTime.MinValue ? DateTime.Now : item.PublishDate.DateTime),
+                    new SqlParameter("@link", item.Links[0].Uri.AbsoluteUri),
+                    new SqlParameter("@pubDate", item.PublishDate.DateTime == DateTime.MinValue ? (DateTime?)null : item.PublishDate.DateTime),
                     new SqlParameter("@userName", user),
                     new SqlParameter("@isRead", false));
             }
@@ -66,16 +66,19 @@ namespace RssFeedApp.Provider
             {
                 var feed = new Feed
                 {
-                    Id = (int) items[0],
+                    Id = (int)items[0],
                     Title = items[1].ToString(),
                     Body = items[2].ToString(),
-                    Link = items[3].ToString()
+                    Link = items[3].ToString(),
+                    IsRead = (bool) items[5]
                 };
+
                 if (items[4] is DateTime)
                 {
                     feed.PubDate = (DateTime)items[4];
                 }
-                feed.IsRead = (bool)items[5];
+
+
                 yield return feed;
             }
         }
@@ -93,7 +96,7 @@ namespace RssFeedApp.Provider
                     Title = items[2].ToString(),
                     Description = items[3].ToString(),
                     ImageUrl = items[4].ToString(),
-                    PubDate = (DateTime)items[5]
+                    PubDate = (DateTime?)items[5]
                 });
         }
 
@@ -119,11 +122,6 @@ namespace RssFeedApp.Provider
                     new SqlParameter("@feeId", feed.Id),
                     new SqlParameter("@isRead", true));
 
-        }
-
-        public void Dispose()
-        {
-            _requestRepository.Dispose();
         }
     }
 }

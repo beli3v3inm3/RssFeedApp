@@ -7,18 +7,15 @@ using Microsoft.Owin.Security.OAuth;
 using RssFeedApp.Models;
 using RssFeedApp.Entities;
 using System;
+using StructureMap.Attributes;
 
 
 namespace RssFeedApp.Provider
 {
     public class SimpleAuthorizationServerProvider : OAuthAuthorizationServerProvider
     {
-        private readonly IUserRepository _repository;
-
-        public SimpleAuthorizationServerProvider(IUserRepository repository)
-        {
-            _repository = repository;
-        }
+        [SetterProperty]
+        public IUserRepository UserRepository { get; set; }
 
         public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
@@ -38,7 +35,7 @@ namespace RssFeedApp.Provider
                 return Task.FromResult<object>(null);
             }
 
-            var client = _repository.FindClient(context.ClientId);
+            var client = UserRepository.FindClient(context.ClientId);
             
             if (client == null)
             {
@@ -80,7 +77,7 @@ namespace RssFeedApp.Provider
 
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { allowedOrigin });
 
-            var user = _repository.FindUser(context.UserName, context.Password);
+            var user = UserRepository.FindUser(context.UserName, context.Password);
 
             if (user == null)
             {

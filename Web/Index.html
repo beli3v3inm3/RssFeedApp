@@ -12,9 +12,6 @@
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-controller="IndexController">
         <div class="container">
             <div class="navbar-header">
-                <button class="btn btn-success navbar-toggle" ng-click="navbarExpanded = !navbarExpanded">
-                    <span class="glyphicon glyphicon-chevron-down"></span>
-                </button>
                 <a class="navbar-brand" href="#/">Home</a>
             </div>
             <div class="collapse navbar-collapse" data-collapse="!navbarExpanded">
@@ -28,9 +25,8 @@
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul ng-hide="!authentication.isAuth" class="nav navbar-nav side-nav">
 
-                    <li ng-hide="!authentication.isAuth"><a href="#/feed">RSS Feed</a></li>
-                    <li ng-hide="!authentication.isAuth"><a href="#/viewfeed">View all RSS</a></li>
-                    <li ng-hide="!authentication.isAuth"><a href="#/refresh">Refresh Token</a></li>
+                    <li ng-hide="!authentication.isAuth"><a href="#/feed">Manage Feed</a></li>
+                    <li ng-hide="!authentication.isAuth"><a href="#/viewfeed">View Feeds</a></li>
                 </ul>
             </div>
         </div>

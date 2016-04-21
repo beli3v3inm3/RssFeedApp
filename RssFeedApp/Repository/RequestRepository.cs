@@ -85,7 +85,6 @@ namespace RssFeedApp.Repository
             GC.SuppressFinalize(this);
         }
 
-        // Protected implementation of Dispose pattern.
         protected virtual void Dispose(bool disposing)
         {
             if (_disposed)
@@ -96,8 +95,6 @@ namespace RssFeedApp.Repository
                 _connection?.Dispose();
             }
 
-            // Free any unmanaged objects here.
-            //
             _disposed = true;
         }
     }

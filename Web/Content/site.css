@@ -97,5 +97,26 @@ body {
 }
 
 .list-group {
-    margin-top:20px;
+    margin-top: 30px;
+    margin-left: 50px;
+}
+
+.item {
+  margin-top: 30px;
+  margin-left: 50px;
+  height: 2.5em;
+  transition: height 0.5s;
+  overflow: hidden;
+}
+
+.item:hover {
+  height: 8em;
+}
+.descrItem {
+    
+}
+
+.form-inline {
+    margin-top:40px;
+    margin-left: 50px;
 }

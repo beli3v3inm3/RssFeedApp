@@ -9,6 +9,5 @@ namespace RssFeedApp.Models
         void ExecuteQuery(string query, params SqlParameter[] parameters);
         IEnumerable<object[]> ExecuteProcReader(string query, params SqlParameter[] parameters);
         IEnumerable<object[]> ExecuteQueryReader(string query, params SqlParameter[] parameters);
-        void Dispose();
     }
 }

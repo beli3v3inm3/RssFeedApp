@@ -1,16 +1,14 @@
-﻿using System;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using RssFeedApp.Entities;
 using RssFeedApp.Models;
-using RssFeedApp.Repository;
 
 namespace RssFeedApp.Provider
 {
-    public class UserRepository : IUserRepository, IDisposable
+    public class UserRepository : IUserRepository
     {
         private readonly IRequestRepository _repository;
 
@@ -201,11 +199,6 @@ namespace RssFeedApp.Provider
             var passwordHash = Hash(password, tempSalt);
 
             return passwordHash.SequenceEqual(tempPass);
-        }
-
-        public void Dispose()
-        {
-            _repository.Dispose();
         }
     }
 }

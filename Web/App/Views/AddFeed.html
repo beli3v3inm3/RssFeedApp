@@ -5,7 +5,12 @@
         <button type="submit" class="btn btn-success" ng-click="submitfeed()">Submit</button>
     </form>
 
-    <ul class="list-group" ng-repeat="q in rss">
-        <li class="list-group-item">{{q.title}}</li>
+    <ul class="list-group" ng-repeat="q in rss" style="text-align: center">
+        <li class="list-group-item">
+            <span class="pull-left">{{q.title}}</span>
+            {{q.description}}
+            <span class="pull-right"><p ng-bind="q.pubDate | date:'MM/dd/yyyy'"></p></span>
+        </li>
+        
     </ul>
 </div>

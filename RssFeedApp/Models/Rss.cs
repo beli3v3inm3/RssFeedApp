@@ -9,6 +9,6 @@ namespace RssFeedApp.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
-        public DateTime PubDate { get; set; }
+        public DateTime? PubDate { get; set; }
     }
 }

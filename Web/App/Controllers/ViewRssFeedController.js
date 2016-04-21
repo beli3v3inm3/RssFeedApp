@@ -44,9 +44,23 @@ app.controller('ViewRssFeedController', ['$scope', '$location', 'RssFeedService'
 
     };
 
+    $scope.deleteItem = function(feedId) {
+        $scope.feedData = {
+            id: feedId
+        };
+
+        rssFeedService.removeItem($scope.feedData).success(function () {
+            getRssItems();
+        });
+    };
+
     function getRssItems() {
         rssFeedService.getFeed().then(function (results) {
             $scope.feed = results.data;
+
+            if ($scope.feed.length === 0) {
+                $location.path('/feed');
+            }
 
         }, function (error) {
             //alert(error.data.message);

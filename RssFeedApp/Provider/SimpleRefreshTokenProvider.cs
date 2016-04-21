@@ -3,18 +3,15 @@ using System.Threading.Tasks;
 using Microsoft.Owin.Security.Infrastructure;
 using RssFeedApp.Entities;
 using RssFeedApp.Models;
+using StructureMap.Attributes;
 
 namespace RssFeedApp.Provider
 {
     public class SimpleRefreshTokenProvider : IAuthenticationTokenProvider
     {
-        
-        private readonly IUserRepository _repository;
 
-        public SimpleRefreshTokenProvider(IUserRepository repository)
-        {
-            _repository = repository;
-        }
+        [SetterProperty]
+        public IUserRepository UserRepository { get; set; }
 
         public async Task CreateAsync(AuthenticationTokenCreateContext context)
         {
@@ -43,7 +40,7 @@ namespace RssFeedApp.Provider
 
             token.ProtectedTicket = context.SerializeTicket();
 
-            var result = await _repository.AddRefreshToken(token);
+            var result = await UserRepository.AddRefreshToken(token);
 
             if (result != null)
             {
@@ -59,13 +56,13 @@ namespace RssFeedApp.Provider
 
             var hashedTokenId = Helper.GetHash(context.Token);
 
-            var refreshToken = _repository.FindRefreshToken(hashedTokenId);
+            var refreshToken = UserRepository.FindRefreshToken(hashedTokenId);
 
             if (refreshToken != null)
             {
                 //Get protectedTicket from refreshToken class
                 context.DeserializeTicket(refreshToken.ProtectedTicket);
-                await _repository.RemoveRefreshToken(hashedTokenId);
+                await UserRepository.RemoveRefreshToken(hashedTokenId);
             }
         }
 

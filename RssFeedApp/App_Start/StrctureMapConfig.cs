@@ -15,27 +15,18 @@ namespace RssFeedApp
             _container = container;
         }
 
-        public IDependencyScope BeginScope()
-        {
-            return new StrctureMapConfig(_container.GetNestedContainer());
-        }
+        public IDependencyScope BeginScope() => new StrctureMapConfig(_container.GetNestedContainer());
 
         public void Dispose()
         {
-            _container?.TransientTracking.DisposeAndClear();
-            //BeginScope()?.Dispose();
+            _container?.Dispose();
         }
 
-        public object GetService(Type serviceType)
-        {
-            return serviceType.IsAbstract || serviceType.IsInterface
-                 ? _container.TryGetInstance(serviceType)
-                 : _container.GetInstance(serviceType);
-        }
+        public object GetService(Type serviceType) => 
+            serviceType.IsAbstract || serviceType.IsInterface
+                ? _container.TryGetInstance(serviceType)
+                : _container.GetInstance(serviceType);
 
-        public IEnumerable<object> GetServices(Type serviceType)
-        {
-            return _container.GetAllInstances(serviceType).Cast<object>();
-        }
+        public IEnumerable<object> GetServices(Type serviceType) => _container.GetAllInstances(serviceType).Cast<object>();
     }
 }

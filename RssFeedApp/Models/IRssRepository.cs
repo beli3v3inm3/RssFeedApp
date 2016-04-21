@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace RssFeedApp.Models
 {
@@ -12,6 +9,5 @@ namespace RssFeedApp.Models
         IEnumerable<Rss> GetRss();
         void RemoveFeed(Feed feed);
         void SetReadItem(Feed feed);
-        void Dispose();
     }
 }
